@@ -1,0 +1,6 @@
+[submodule "Bulletshot/dependencies/GLFW"]
+	path = Bulletshot/dependencies/GLFW
+	url = https://github.com/kryvytskyidenys/glfw
+[submodule "Bulletshot/dependencies/gdm"]
+	path = Bulletshot/dependencies/gdm
+	url = https://github.com/kryvytskyidenys/gdm
