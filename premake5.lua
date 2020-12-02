@@ -11,9 +11,9 @@ workspace "Bulletshot"
     outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
 IncludeDir = {}
-IncludeDir["GLFW"] = "%{wks.location}/Tron/dependencies/GLFW/include"
-IncludeDir["glad"] = "%{wks.location}/Tron/dependencies/glad/include"
-IncludeDir["gdm"] = "%{wks.location}/Tron/dependencies/gdm"
+IncludeDir["GLFW"] = "%{wks.location}/Bulletshot/dependencies/GLFW/include"
+IncludeDir["glad"] = "%{wks.location}/Bulletshot/dependencies/glad/include"
+IncludeDir["gdm"] = "%{wks.location}/Bulletshot/dependencies/gdm"
 
 include "Bulletshot/dependencies/GLFW"
 include "Bulletshot/dependencies/glad"
@@ -63,11 +63,11 @@ project "Bulletshot"
         systemversion "latest"
 
     filter "configurations:Debug"
-        defines "BS_DEBUG"
+        defines "DEBUG"
         runtime "Debug"
         symbols "on"
 
     filter "configurations:Release"
-        defines "BS_DEBUG"
+        defines "RELEASE"
         runtime "Release"
         optimize "on"
