@@ -44,7 +44,7 @@ project "Bulletshot"
         "%{prj.name}/src",
         "%{IncludeDir.GLFW}",
         "%{IncludeDir.glad}",
-        "%{IncludeDir.gdm}",
+        "%{IncludeDir.gdm}"
     }
 
     links

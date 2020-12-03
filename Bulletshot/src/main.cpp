@@ -3,6 +3,13 @@
 #include <GLFW/glfw3.h>
 #include <glad/glad.h>
 
+#include "Game.h"
+#include "ShaderLibrary.h"
+
+#include "glm/glm.hpp"
+#include <glm/gtc/matrix_transform.hpp>
+
+//
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode);
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 
@@ -13,10 +20,13 @@ int main()
     {
         ASSERT(false);
     }
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
     // create window
-    const unsigned int screenWidth = 1280;
-    const unsigned int screenHeight = 720;
+    const uint32_t screenWidth = 1280;
+    const uint32_t screenHeight = 720;
 
     GLFWwindow* window = glfwCreateWindow(screenWidth, screenHeight, "Bulletshot", nullptr, nullptr);
     if (!window)
@@ -43,12 +53,26 @@ int main()
     glfwSetKeyCallback(window, key_callback);
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
+    // Game init
+    Game game;
+    game.Init();
+
     while (!glfwWindowShouldClose(window))
     {
-        std::cout << "Main loop" << std::endl;
+        glfwPollEvents();
+
+        //std::cout << "Main loop" << std::endl;
+        game.ProcessInput(0);
+
+        game.Update(0);
+
+        glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+        glClear(GL_COLOR_BUFFER_BIT);
+        game.Render();
+
+        glfwSwapBuffers(window);
     }
 
-    system("pause");
     return 0;
 }
 
