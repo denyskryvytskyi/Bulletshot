@@ -3,15 +3,13 @@
 #include <GLFW/glfw3.h>
 #include <glad/glad.h>
 
-#include "Game.h"
-#include "ShaderLibrary.h"
-
-#include "glm/glm.hpp"
-#include <glm/gtc/matrix_transform.hpp>
+#include "Game/Game.h"
+#include "Core/Timer.h"
 
 //
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode);
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
+//
 
 int main()
 {
@@ -36,7 +34,7 @@ int main()
         return -1;
     }
     glfwMakeContextCurrent(window);
-    glfwSwapInterval(1); // vsync
+    //glfwSwapInterval(1); // vsync
 
     // load opengl functions
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
@@ -57,14 +55,21 @@ int main()
     Game game;
     game.Init();
 
+    Timer timer;
     while (!glfwWindowShouldClose(window))
     {
+        float elapsed = timer.elapsed();
+        timer.restart();
+
+        std::cout << "Elapsed time: " << elapsed << std::endl;
+        std::cout << "FPS: " << 1.0f / elapsed << std::endl;
+
+
         glfwPollEvents();
 
-        //std::cout << "Main loop" << std::endl;
-        game.ProcessInput(0);
+        game.ProcessInput(elapsed);
 
-        game.Update(0);
+        game.Update(elapsed);
 
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);

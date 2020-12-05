@@ -1,11 +1,6 @@
 #include "bspch.h"
 #include "Renderer.h"
 
-Renderer::Renderer()
-{
-    initRenderData();
-}
-
 Renderer::~Renderer()
 {
     glDeleteVertexArrays(1, &quadVAO);

@@ -6,7 +6,7 @@
 class Renderer
 {
 public:
-    Renderer();
+    Renderer() = default;
     ~Renderer();
 
     void Init(StrongShaderPtr& shader);
