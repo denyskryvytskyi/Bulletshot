@@ -1,7 +1,6 @@
 #include "bspch.h"
 #include "BulletManager.h"
-
-std::mutex g_Mutex;
+#include "Game.h"
 
 BulletManager::BulletManager()
 {
@@ -14,11 +13,28 @@ BulletManager::~BulletManager()
 
 void BulletManager::Update(float dt)
 {
-    std::lock_guard<std::mutex> lock(g_Mutex);
+    static int32_t fails;
+    if (m_Mutex.try_lock())
+    {
+        // update bullets with shared resource
+        for (auto sharedBullet : m_SharedResource)
+        {
+            m_BulletObjects.push_back(sharedBullet);
+        }
+        m_SharedResource.clear();
+        m_Mutex.unlock();
+    }
+    else
+    {
+        ++fails;
+    }
+
+    //std::lock_guard<std::mutex> lock(g_Mutex);
     for (auto bulletIterator = m_BulletObjects.begin(); bulletIterator != m_BulletObjects.end();)
     {
         if ((*bulletIterator)->IsDestroyed())
         {
+            Game::OnGameobjectDestroyed((*bulletIterator));
             bulletIterator = m_BulletObjects.erase(bulletIterator);
         }
         else
@@ -31,13 +47,14 @@ void BulletManager::Update(float dt)
 
 void BulletManager::Fire(gdm::vec2 pos, gdm::vec2 dir, float speed, float time, float lifetime)
 {
-    StrongBulletPtr bullet = std::make_shared<BulletObject>(pos, dir, speed, time, lifetime);
+    BulletObject* bullet = new BulletObject(pos, dir, speed, time, lifetime);
 
-    std::lock_guard<std::mutex> lock(g_Mutex);
-    m_BulletObjects.push_back(bullet);
+    std::lock_guard<std::mutex> lock(m_Mutex);
+    //m_BulletObjects.push_back(bullet);
+    m_SharedResource.push_back(bullet);
 }
 
-const std::vector<StrongBulletPtr>& BulletManager::GetBulletObjects() const
+const std::vector<BulletObject*>& BulletManager::GetBulletObjects() const
 {
     return m_BulletObjects;
 }

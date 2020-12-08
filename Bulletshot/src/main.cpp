@@ -18,9 +18,6 @@ int main()
     {
         ASSERT(false);
     }
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
     // create window
     const uint32_t screenWidth = 1280;
@@ -63,7 +60,6 @@ int main()
 
         std::cout << "Elapsed time: " << elapsed << std::endl;
         std::cout << "FPS: " << 1.0f / elapsed << std::endl;
-
 
         glfwPollEvents();
 
