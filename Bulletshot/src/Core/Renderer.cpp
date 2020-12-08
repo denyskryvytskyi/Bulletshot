@@ -60,7 +60,7 @@ void Renderer::initRenderData()
     float quadVertices[] = {
        0.0f, 1.0f,
        1.0f, 0.0f,
-       0.0f, 0.0f,
+       0.0f, 0.0f, // pos of quad
 
        0.0f, 1.0f,
        1.0f, 1.0f,

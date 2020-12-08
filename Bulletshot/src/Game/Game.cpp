@@ -26,18 +26,14 @@ void Game::Init()
     shader->SetMatrix4("u_Proj", proj);
     //
 
-    // Perfomance stress test
-    // Without threads
-    //PerformanceStressTest(2000);
-
     // With threads 
-    for (size_t i = 0; i < maxThreadsCount; i++)
+    /*for (size_t i = 0; i < maxThreadsCount; i++)
     {
         m_Threads.push_back(std::thread(&Game::PerformanceStressTest, this, 25));
-    }
+    }*/
     //
-    PerformanceStressTest(100);
-    GenerateWalls(100);
+    PerformanceStressTest(150);
+    GenerateWalls(150);
 
     // Init Renderer
     m_Renderer.Init(shader);
@@ -60,6 +56,19 @@ void Game::Update(float dt)
     }*/
 
     // Walls update
+    for (auto wallIterator = m_Walls.begin(); wallIterator != m_Walls.end();)
+    {
+        if ((*wallIterator)->IsDestroyed())
+        {
+            Game::OnGameobjectDestroyed(*wallIterator);
+            delete *wallIterator;
+            wallIterator = m_Walls.erase(wallIterator);
+        }
+        else
+        {
+            ++wallIterator;
+        }
+    }
 
     // Physics update
     g_Physics.DoCollisions();
@@ -73,8 +82,6 @@ void Game::Render()
         wall->Draw(m_Renderer);
     }
 
-    // Defend bulletobjects vector from iterator invalidation
-    //std::lock_guard<std::mutex> lock(g_Mutex);
     for (auto bullet : m_BulletManager.GetBulletObjects())
     {
         bullet->Draw(m_Renderer);
@@ -101,9 +108,10 @@ void Game::PerformanceStressTest(int32_t bulletsCount)
 {
     for (size_t j = 0; j < bulletsCount; j++)
     {
-        gdm::vec2 pos(100.0f, 100.0f);
-        gdm::vec2 dir(1.001f, 1.0f);
-        float speed = 150.0f;
+        gdm::vec2 pos(10.0f + j * 40.0f, 10.0f);
+        //gdm::vec2 pos(10.0f, 100.0f);
+        gdm::vec2 dir(1.0f, 0.99999f);
+        float speed = 200.0f;
         float timeToSpawn = 3.0f;
         float lifetime = 5.0f;
 
@@ -125,13 +133,15 @@ void Game::GenerateWalls(int32_t count)
 {
     for (size_t i = 0; i < count; i++)
     {
-        gdm::vec2 pos(10.0f, 600.0f);
-        gdm::vec2 size(700.0f, 20.0f);
+        gdm::vec2 pos(10.0f + i * 50.0f, 600.0f);
+        //gdm::vec2 pos(10.0f, 600.0f);
+        gdm::vec2 size(500.0f, 20.0f);
         float rotation = 0.0f;
 
         WallObject* wall = new WallObject(pos, size, rotation);
         m_Walls.push_back(wall);
 
-        OnGameobjectSpawned(wall);
+        //OnGameobjectSpawned(wall);
+        g_Physics.RegisterObject(wall);
     }
 }

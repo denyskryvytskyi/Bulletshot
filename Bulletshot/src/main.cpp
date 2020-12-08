@@ -58,7 +58,7 @@ int main()
         float elapsed = timer.elapsed();
         timer.restart();
 
-        std::cout << "Elapsed time: " << elapsed << std::endl;
+        //std::cout << "Elapsed time: " << elapsed << std::endl;
         std::cout << "FPS: " << 1.0f / elapsed << std::endl;
 
         glfwPollEvents();

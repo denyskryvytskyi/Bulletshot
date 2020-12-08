@@ -2,12 +2,12 @@
 #include "BulletManager.h"
 #include "Game.h"
 
-BulletManager::BulletManager()
-{
-}
-
 BulletManager::~BulletManager()
 {
+    for (int32_t i = 0; i < m_BulletObjects.size(); i++)
+    {
+        delete m_BulletObjects[i];
+    }
     m_BulletObjects.clear();
 }
 
@@ -34,7 +34,8 @@ void BulletManager::Update(float dt)
     {
         if ((*bulletIterator)->IsDestroyed())
         {
-            Game::OnGameobjectDestroyed((*bulletIterator));
+            Game::OnGameobjectDestroyed(*bulletIterator);
+            delete *bulletIterator;
             bulletIterator = m_BulletObjects.erase(bulletIterator);
         }
         else

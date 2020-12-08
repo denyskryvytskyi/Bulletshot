@@ -14,7 +14,6 @@ public:
     void OnCollisionEnter(GameObject* objA, GameObject* objB, const CollisionInfo& collisionInfo) override;
     float GetRotation() const override { return 0; }
 
-    bool IsDestroyed() const { return m_Destroyed; };
     CollisionShape GetShape() const override { return m_Shape; }
 
 private:
@@ -27,3 +26,5 @@ private:
     float m_Radius;
     bool m_Spawned;
 };
+
+typedef std::shared_ptr<BulletObject> StrongBulletObjectPtr;

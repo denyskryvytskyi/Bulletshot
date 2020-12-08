@@ -19,6 +19,7 @@ public:
 
     const gdm::vec2& GetPosition() const { return m_Position; }
     const gdm::vec2& GetSize() const { return m_Size; }
+    bool IsDestroyed() const { return m_Destroyed; };
 
 protected:
     gdm::vec3 m_Color;
@@ -27,5 +28,3 @@ protected:
     ShapeType m_Shape;
     bool m_Destroyed;
 };
-
-typedef std::shared_ptr<GameObject> StrongGameObjectPtr;

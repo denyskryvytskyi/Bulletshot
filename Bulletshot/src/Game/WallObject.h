@@ -11,8 +11,6 @@ public:
 
     void Draw(Renderer& renderer) override;
 
-    bool IsDestroyed() const { return m_Destroyed; };
-
     void OnCollisionEnter(GameObject* objA, GameObject* objB, const CollisionInfo& collisionInfo) override;
     float GetRotation() const override { return m_RotationAngle; }
 

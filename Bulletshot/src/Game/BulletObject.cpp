@@ -52,24 +52,39 @@ void BulletObject::Update(float dt)
 
 void BulletObject::OnCollisionEnter(GameObject* objA, GameObject* objB, const CollisionInfo& collisionInfo)
 {
-    //GameObject* wall = nullptr;
+    gdm::vec2 oldDir = m_Dir;
+    m_Dir = Physics::GetReflectionVector(m_Dir, m_Position, collisionInfo);
 
-    //if (objA == this)
-    //{
-    //    if (objB->GetShape().m_Type == ShapeType::AABB)
-    //    {
-    //        wall = objB;
-    //    }
-    //}
-    //else if 
+    // Calculate penetration
+    gdm::vec2 differenceVector = std::get<1>(collisionInfo);
 
-    //if (wall)
+    // horizontal collision
+    float penetrationX = m_Radius - std::abs(differenceVector.x);
+    float penetrationY = m_Radius - std::abs(differenceVector.y);
+
+    if (penetrationX != m_Radius)
     {
-        //m_Dir = Physics::GetReflectionVector(m_Dir, m_Position, intersection);
-        m_Dir = Physics::CollisionResolution(m_Dir, m_Position, collisionInfo);
-        //m_Position = intersection + m_Dir;
-
-        //wall->Destroy();
+        if (oldDir.x > m_Dir.x) // new dir is left
+        {
+            m_Position.x -= penetrationX; // move bullet to right
+        }
+        else // new dir is right
+        {
+            m_Position.x += penetrationX; // move bullet to right;
+        }
     }
+    
 
+    if (penetrationY != m_Radius)
+    {
+        // vertical collision
+        if (oldDir.y > m_Dir.y) // new dir is down
+        {
+            m_Position.y -= penetrationY; // move bullet back down
+        }
+        else // new dir is up
+        {
+            m_Position.y += penetrationY; // move bullet back up;
+        }
+    }
 }

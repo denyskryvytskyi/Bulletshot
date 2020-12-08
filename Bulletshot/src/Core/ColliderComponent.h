@@ -15,27 +15,27 @@ struct CollisionShape
     ShapeType m_Type;
 };
 
-struct AABBShape : public CollisionShape
-{
-    AABBShape(gdm::vec2 pos, gdm::vec2 size, ShapeType type = ShapeType::AABB)
-        : CollisionShape(type)
-        , m_Pos(pos), m_Size(size)
-    {}
-
-    gdm::vec2 m_Pos;
-    gdm::vec2 m_Size;
-};
-
-struct CircleShape : public CollisionShape
-{
-    CircleShape(gdm::vec2 pos, float radius, ShapeType type = ShapeType::Circle)
-        : CollisionShape(type)
-        , m_Pos(pos), m_Radius(radius)
-    {}
-
-    gdm::vec2 m_Pos;
-    float m_Radius;
-};
+//struct AABBShape : public CollisionShape
+//{
+//    AABBShape(gdm::vec2 pos, gdm::vec2 size, ShapeType type = ShapeType::AABB)
+//        : CollisionShape(type)
+//        , m_Pos(pos), m_Size(size)
+//    {}
+//
+//    gdm::vec2 m_Pos;
+//    gdm::vec2 m_Size;
+//};
+//
+//struct CircleShape : public CollisionShape
+//{
+//    CircleShape(gdm::vec2 pos, float radius, ShapeType type = ShapeType::Circle)
+//        : CollisionShape(type)
+//        , m_Pos(pos), m_Radius(radius)
+//    {}
+//
+//    gdm::vec2 m_Pos;
+//    float m_Radius;
+//};
 
 //enum class CollisionShape
 //{

@@ -6,7 +6,7 @@
 class BulletManager
 {
 public:
-    BulletManager();
+    BulletManager() = default;
     ~BulletManager();
 
     void Update(float dt);
@@ -19,30 +19,3 @@ private:
     std::vector<BulletObject*> m_SharedResource;
     std::mutex m_Mutex;
 };
-//
-//template<class DataType>
-//class SharedDataWrapper
-//{
-//private:
-//    DataType data;
-//    std::mutex mutex;
-//
-//public:
-//    template<typename Func>
-//    void processData(const Func& func)
-//    {
-//        std::lock_guard<std::mutex> lock(mutex);
-//        func(data);
-//    }
-//};
-//
-//template<class T>
-//struct LockObject
-//{
-//    LockObject(T& obj, std::mutex& mut)
-//        : object(obj), locker(mut)
-//    {}
-//
-//    T& object;
-//    std::lock_guard<std::mutex> locker;
-//};
