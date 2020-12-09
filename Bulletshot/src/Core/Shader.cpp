@@ -1,5 +1,6 @@
 #include "bspch.h"
 #include "Shader.h"
+#include <glad/glad.h>
 
 Shader::Shader()
     : m_RendererId(0)

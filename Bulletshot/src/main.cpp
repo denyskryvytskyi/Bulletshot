@@ -20,8 +20,8 @@ int main()
     }
 
     // create window
-    const uint32_t screenWidth = 1280;
-    const uint32_t screenHeight = 720;
+    const uint16_t screenWidth = 1280;
+    const uint16_t screenHeight = 720;
 
     GLFWwindow* window = glfwCreateWindow(screenWidth, screenHeight, "Bulletshot", nullptr, nullptr);
     if (!window)
@@ -50,7 +50,7 @@ int main()
 
     // Game init
     Game game;
-    game.Init();
+    game.Init(screenWidth, screenHeight);
 
     Timer timer;
     while (!glfwWindowShouldClose(window))

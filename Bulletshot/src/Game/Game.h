@@ -1,39 +1,39 @@
 #pragma once
 
 #include "Core/Renderer.h"
+#include "Core/Camera.h"
 #include "Core/ShaderLibrary.h"
-#include "Core/Physics.h"
-
 #include "BulletManager.h"
+#include "WallManager.h"
 
 class Game
 {
 public:
-    Game();
+    Game() = default;
     ~Game();
 
-    void Init();
+    void Init(const uint16_t& screenWidth, const uint16_t& screenHeight);
     void ProcessInput(float dt);
     void Update(float dt);
     void Render();
 
+    static void OnGameobjectSpawned(GameObject* gameobject);
+    static void OnGameobjectDestroyed(GameObject* gameobject);
+
     // tests
     void MTStabilityStressTest(int32_t bulletsCount);
     void PerformanceStressTest(int32_t bulletsCount);
-
-    //
-    static void OnGameobjectSpawned(GameObject* gameobject);
-    static void OnGameobjectDestroyed(GameObject* gameobject);
 
 private:
     void GenerateWalls(int32_t count);
 
 private:
     Renderer m_Renderer;
+    Camera m_Camera;
     ShaderLibrary m_ShaderLibrary;
     BulletManager m_BulletManager;
+    WallManager m_WallManager;
 
     std::vector<std::thread> m_Threads;
-    std::vector<GameObject*> m_Walls;
 };
 

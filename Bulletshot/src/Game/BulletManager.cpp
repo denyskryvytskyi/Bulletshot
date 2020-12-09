@@ -13,7 +13,6 @@ BulletManager::~BulletManager()
 
 void BulletManager::Update(float dt)
 {
-    static int32_t fails;
     if (m_Mutex.try_lock())
     {
         // update bullets with shared resource
@@ -24,12 +23,7 @@ void BulletManager::Update(float dt)
         m_SharedResource.clear();
         m_Mutex.unlock();
     }
-    else
-    {
-        ++fails;
-    }
 
-    //std::lock_guard<std::mutex> lock(g_Mutex);
     for (auto bulletIterator = m_BulletObjects.begin(); bulletIterator != m_BulletObjects.end();)
     {
         if ((*bulletIterator)->IsDestroyed())
@@ -51,7 +45,6 @@ void BulletManager::Fire(gdm::vec2 pos, gdm::vec2 dir, float speed, float time, 
     BulletObject* bullet = new BulletObject(pos, dir, speed, time, lifetime);
 
     std::lock_guard<std::mutex> lock(m_Mutex);
-    //m_BulletObjects.push_back(bullet);
     m_SharedResource.push_back(bullet);
 }
 

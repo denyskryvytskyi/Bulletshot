@@ -1,13 +1,7 @@
 #include "bspch.h"
 #include "Game.h"
-#include "WallObject.h"
 
-//extern std::mutex g_Mutex;
 const unsigned int maxThreadsCount = 4;
-
-Game::Game()
-{
-}
 
 Game::~Game()
 {
@@ -17,26 +11,30 @@ Game::~Game()
     }
 }
 
-void Game::Init()
+void Game::Init(const uint16_t& screenWidth, const uint16_t& screenHeight)
 {
     // Init Camera
-    StrongShaderPtr shader = m_ShaderLibrary.Load("default_shader", "res/shaders/vertex.vs", "res/shaders/fragment.fs");
-    gdm::mat4 proj = gdm::orthographic(0.0f, (float)1280, 0.0f, (float)720, -1.0f, 1.0f);
-    shader->Bind();
-    shader->SetMatrix4("u_Proj", proj);
-    //
+    m_Camera.SetProjection(0.0f, (float)screenWidth, 0.0f, (float)screenHeight);
 
-    // With threads 
-    for (size_t i = 0; i < maxThreadsCount; i++)
-    {
-        m_Threads.push_back(std::thread(&Game::PerformanceStressTest, this, 40));
-    }
+    // Shaders
+    StrongShaderPtr shader = m_ShaderLibrary.Load("default_shader");
+    shader->Bind();
+    shader->SetMatrix4("u_Proj", m_Camera.GetProjectionMatrix());
     //
-    /*PerformanceStressTest(300);*/
-    GenerateWalls(160);
 
     // Init Renderer
     m_Renderer.Init(shader);
+    //
+
+    // Init bullets and walls
+    // With threads 
+    /*for (size_t i = 0; i < maxThreadsCount; i++)
+    {
+        m_Threads.push_back(std::thread(&Game::PerformanceStressTest, this, 40));
+    }*/
+    // Without threads
+    PerformanceStressTest(160);
+    GenerateWalls(160);
     //
 }
 
@@ -46,29 +44,17 @@ void Game::ProcessInput(float dt)
 
 void Game::Update(float dt)
 {
-    // Bullets update
-    m_BulletManager.Update(dt);
-
     // MT Stress Test
     /*for (size_t i = 0; i < maxThreadsCount; i++)
     {
         m_Threads.push_back(std::thread(&Game::MTStabilityStressTest, this, 6));
     }*/
 
+    // Bullets update
+    m_BulletManager.Update(dt);
+
     // Walls update
-    for (auto wallIterator = m_Walls.begin(); wallIterator != m_Walls.end();)
-    {
-        if ((*wallIterator)->IsDestroyed())
-        {
-            Game::OnGameobjectDestroyed(*wallIterator);
-            delete *wallIterator;
-            wallIterator = m_Walls.erase(wallIterator);
-        }
-        else
-        {
-            ++wallIterator;
-        }
-    }
+    m_WallManager.Update();
 
     // Physics update
     g_Physics.DoCollisions(dt);
@@ -77,7 +63,7 @@ void Game::Update(float dt)
 
 void Game::Render()
 {
-    for (auto wall : m_Walls)
+    for (auto wall : m_WallManager.GetWalls())
     {
         wall->Draw(m_Renderer);
     }
@@ -87,6 +73,18 @@ void Game::Render()
         bullet->Draw(m_Renderer);
     }
 }
+
+void Game::OnGameobjectSpawned(GameObject* gameobject)
+{
+    g_Physics.RegisterObject(gameobject);
+}
+
+void Game::OnGameobjectDestroyed(GameObject* gameobject)
+{
+    g_Physics.UnregisterObject(gameobject);
+}
+
+// ----------------------------------------------------------
 
 // MT Stress Test
 void Game::MTStabilityStressTest(int32_t bulletsCount)
@@ -119,16 +117,6 @@ void Game::PerformanceStressTest(int32_t bulletsCount)
     }
 }
 
-void Game::OnGameobjectSpawned(GameObject* gameobject)
-{
-    g_Physics.RegisterObject(gameobject);
-}
-
-void Game::OnGameobjectDestroyed(GameObject* gameobject)
-{
-    g_Physics.UnregisterObject(gameobject);
-}
-
 void Game::GenerateWalls(int32_t count)
 {
     for (size_t i = 0; i < count; i++)
@@ -138,10 +126,6 @@ void Game::GenerateWalls(int32_t count)
         gdm::vec2 size(10.0f, 10.0f);
         float rotation = 0.0f;
 
-        WallObject* wall = new WallObject(pos, size, rotation);
-        m_Walls.push_back(wall);
-
-        //OnGameobjectSpawned(wall);
-        g_Physics.RegisterObject(wall);
+        m_WallManager.CreateWall(pos, size, rotation);
     }
 }

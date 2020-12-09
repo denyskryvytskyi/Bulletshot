@@ -1,7 +1,6 @@
 #pragma once
 
 #include <iostream>
-#include <fstream>
 #include <memory>
 #include <functional>
 #include <string>
@@ -9,4 +8,4 @@
 #include <set>
 #include <mutex>
 
-#include "Core/Core.h"
+#include "Core/Assert.h"

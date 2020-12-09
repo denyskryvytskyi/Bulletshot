@@ -1,7 +1,6 @@
 #pragma once
 
 #include <gdm/gdm.h>
-#include <glad/glad.h>
 
 struct ShaderProgramSource
 {
@@ -36,4 +35,3 @@ private:
 };
 
 typedef std::shared_ptr<Shader> StrongShaderPtr;
-typedef std::weak_ptr<Shader> WeakShaderPtr;
