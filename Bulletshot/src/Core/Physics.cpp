@@ -5,7 +5,7 @@
 
 Physics g_Physics;
 
-void Physics::DoCollisions()
+void Physics::DoCollisions(float dt)
 {
     for (int32_t i = 0; i < m_Colliders.size(); ++i)
     {
@@ -30,8 +30,8 @@ void Physics::DoCollisions()
 
             if (std::get<0>(collisionResult))
             {
-                objA->OnCollisionEnter(objA, objB, collisionResult);
-                objB->OnCollisionEnter(objA, objB, collisionResult);
+                objA->OnCollisionEnter(collisionResult);
+                objB->OnCollisionEnter(collisionResult);
             }
         }
     }
@@ -52,40 +52,6 @@ void Physics::UnregisterObject(GameObject* gameobject)
     }
 }
 
-//void Physics::RegisterObjectWall(const StrongGameObjectPtr& gameobject)
-//{
-//    m_CollidersWalls.push_back(gameobject);
-//    //m_Observers.insert(gameobject);
-//    //m_Subject.AddObserver(dynamic_cast<CollisionObserver*>(gameobject));
-//}
-//
-//void Physics::UnregisterObjectWall(const StrongGameObjectPtr& gameobject)
-//{
-//    auto it = std::find(m_CollidersWalls.begin(), m_CollidersWalls.end(), gameobject);
-//
-//    if (it != m_CollidersWalls.end())
-//    {
-//        m_CollidersWalls.erase(it);
-//    }
-//    //m_Observers.erase(gameobject);
-//}
-//
-//void Physics::RegisterObjectBullet(const StrongGameObjectPtr& gameobject)
-//{
-//    m_CollidersBullets.push_back(gameobject);
-//}
-//
-//void Physics::UnregisterObjectBullet(const StrongGameObjectPtr& gameobject)
-//{
-//    std::remove(m_CollidersBullets.begin(), m_CollidersBullets.end(), gameobject);
-//    auto it = std::find(m_CollidersBullets.begin(), m_CollidersBullets.end(), gameobject);
-//
-//    if (it != m_CollidersBullets.end())
-//    {
-//        m_CollidersBullets.erase(it);
-//    }
-//}
-
 CollisionType Physics::DetectCollisionType(CollisionShape colliderA, CollisionShape colliderB) const
 {
     if ((colliderA.m_Type == ShapeType::AABB && colliderB.m_Type == ShapeType::Circle) ||
@@ -99,51 +65,45 @@ CollisionType Physics::DetectCollisionType(CollisionShape colliderA, CollisionSh
 
 CollisionInfo Physics::CheckCollision(const GameObject* aabb, const GameObject* circle)
 {
-    float circleRadius = circle->GetSize().x / 2.0f;
     gdm::vec2 circleCenter = circle->GetPosition();
+    gdm::vec2 rotatedCircleCenter = circleCenter;
 
     gdm::vec2 rectPos = aabb->GetPosition();
     gdm::vec2 rectSize = aabb->GetSize();
+    gdm::vec2 rectCenter = rectPos + rectSize / 2; // unrotated
     float angle = gdm::radians(aabb->GetRotation());
 
-    // rotation circle
-    gdm::vec2 rectCenter = rectPos + rectSize / 2;
-    gdm::vec2 rotatedCircle = RotatePoint(angle, circleCenter, rectCenter);
-   /* rotatedCircle.x = cos(angle) * (circleCenter.x - rectCenter.x) - sin(angle) * (circleCenter.y - rectCenter.y) + rectCenter.x;
-    rotatedCircle.y = sin(angle) * (circleCenter.x - rectCenter.x) + cos(angle) * (circleCenter.y - rectCenter.y) + rectCenter.y;*/
+    // Rotate circle center point
+    if (angle != 0)
+    {
+        rotatedCircleCenter = RotatePoint(angle, circleCenter, rectCenter);
+    }
 
-    //
-    gdm::vec2 intersectPoint = gdm::clamp(rotatedCircle, rectPos, rectPos + rectSize);
-    //
+    gdm::vec2 intersectPoint = gdm::clamp(rotatedCircleCenter, rectPos, rectPos + rectSize);
 
-    // Rotate back intersectionPoint
-    angle = -angle;
-    gdm::vec2 retInter = RotatePoint(angle, intersectPoint, rectCenter);
-   /* retInter.x = cos(angle) * (intersectPoint.x - rectCenter.x) - sin(angle) * (intersectPoint.y - rectCenter.y) + rectCenter.x;
-    retInter.y = sin(angle) * (intersectPoint.x - rectCenter.x) + cos(angle) * (intersectPoint.y - rectCenter.y) + rectCenter.y;*/
-    //
+    // Rotate intersection point
+    if (angle != 0)
+    {
+        angle = -angle;
+        intersectPoint = RotatePoint(angle, intersectPoint, rectCenter);
+    }
 
-    gdm::vec2 difference = retInter - circleCenter;
+    gdm::vec2 difference = intersectPoint - circleCenter;
 
-    if (gdm::magnitude(difference) <= circleRadius)
+    // Compare difference vector and circle radius
+    if (gdm::magnitude(difference) <= (circle->GetSize().x / 2.0f))
         return std::make_pair(true, difference);
     else
         return std::make_pair(false, gdm::vec2(0.0f, 0.0f));
 }
 
 
-gdm::vec2 Physics::GetReflectionVector(gdm::vec2 dir, gdm::vec2 pos, CollisionInfo info)
+gdm::vec2 Physics::GetReflectionVector(gdm::vec2 dir, gdm::vec2 differenceVector)
 {
-    //gdm::vec2 intersectPoint = std::get<2>(info);
-    //gdm::vec2 distance(pos.x - intersectPoint.x, pos.y - intersectPoint.y);
-    //gdm::vec2 normal(distance.x, distance.y);
-
-    gdm::vec2 normal = gdm::normalize(std::get<1>(info));
-    //normal = gdm::normalize(normal);
+    gdm::vec2 normal = gdm::normalize(differenceVector);
 
     // r = d - 2(d . n) * n , where d . n is dot product
     return (dir - normal * (gdm::dot(dir, normal) * 2));
-    //return gdm::vec2();
 }
 
 

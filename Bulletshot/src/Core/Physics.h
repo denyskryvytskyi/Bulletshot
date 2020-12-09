@@ -1,7 +1,5 @@
 #pragma once
 
-#include "CommonTypes.h"
-#include "CollisionObserver.h"
 #include "GameObject.h"
 
 enum class CollisionType
@@ -13,12 +11,13 @@ enum class CollisionType
 class Physics
 {
 public:
-    void DoCollisions();
+    void DoCollisions(float dt);
 
     void RegisterObject(GameObject* gameobject);
     void UnregisterObject(GameObject* gameobject);
 
-    static gdm::vec2 GetReflectionVector(gdm::vec2 dir, gdm::vec2 pos, CollisionInfo info);
+    // defferenceVector - distance beetween circle center and intersection(reflection) point
+    static gdm::vec2 GetReflectionVector(gdm::vec2 dir, gdm::vec2 differenceVector);
 
 private:
     CollisionType DetectCollisionType(CollisionShape colliderA, CollisionShape colliderB) const;
@@ -30,7 +29,6 @@ private:
 
 private:
     std::vector<GameObject*> m_Colliders;
-    std::set<CollisionObserver*> m_Observers;
 };
 
 extern Physics g_Physics;

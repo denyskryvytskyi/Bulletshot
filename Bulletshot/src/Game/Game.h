@@ -32,10 +32,8 @@ private:
     Renderer m_Renderer;
     ShaderLibrary m_ShaderLibrary;
     BulletManager m_BulletManager;
-    //Physics m_Physics;
 
     std::vector<std::thread> m_Threads;
-
     std::vector<GameObject*> m_Walls;
 };
 

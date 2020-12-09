@@ -4,7 +4,7 @@
 #include "Game.h"
 
 BulletObject::BulletObject(gdm::vec2 pos, gdm::vec2 dir, float speed, float time, float lifetime, float radius, gdm::vec3 color, ShapeType shape)
-    : GameObject(pos, { radius }, color, shape)
+    : GameObject(pos, { radius * 2.0f }, color, shape)
     , m_Dir(dir), m_Speed(speed), m_TimeToSpawn(time), m_Lifetime(lifetime), m_Radius(radius), m_Spawned(false)
 {
 }
@@ -50,41 +50,39 @@ void BulletObject::Update(float dt)
     m_Position += (m_Dir * m_Speed) * dt;
 }
 
-void BulletObject::OnCollisionEnter(GameObject* objA, GameObject* objB, const CollisionInfo& collisionInfo)
+void BulletObject::OnCollisionEnter(CollisionInfo info)
 {
+    gdm::vec2 differenceVector = std::get<1>(info);
+
     gdm::vec2 oldDir = m_Dir;
-    m_Dir = Physics::GetReflectionVector(m_Dir, m_Position, collisionInfo);
+    m_Dir = Physics::GetReflectionVector(m_Dir, differenceVector);
 
     // Calculate penetration
-    gdm::vec2 differenceVector = std::get<1>(collisionInfo);
+    float penetrationX = (m_Radius - std::abs(differenceVector.x));
+    float penetrationY = (m_Radius - std::abs(differenceVector.y));
 
-    // horizontal collision
-    float penetrationX = m_Radius - std::abs(differenceVector.x);
-    float penetrationY = m_Radius - std::abs(differenceVector.y);
-
+    // Horizontal
     if (penetrationX != m_Radius)
     {
         if (oldDir.x > m_Dir.x) // new dir is left
         {
-            m_Position.x -= penetrationX; // move bullet to right
+            m_Position.x -= penetrationX; // move bullet to left
         }
         else // new dir is right
         {
-            m_Position.x += penetrationX; // move bullet to right;
+            m_Position.x += penetrationX; // move bullet to right
         }
     }
-    
-
+    // Vertical
     if (penetrationY != m_Radius)
     {
-        // vertical collision
         if (oldDir.y > m_Dir.y) // new dir is down
         {
             m_Position.y -= penetrationY; // move bullet back down
         }
         else // new dir is up
         {
-            m_Position.y += penetrationY; // move bullet back up;
+            m_Position.y += penetrationY; // move bullet back up
         }
     }
 }

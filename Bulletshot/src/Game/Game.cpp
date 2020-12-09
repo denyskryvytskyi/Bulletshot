@@ -27,13 +27,13 @@ void Game::Init()
     //
 
     // With threads 
-    /*for (size_t i = 0; i < maxThreadsCount; i++)
+    for (size_t i = 0; i < maxThreadsCount; i++)
     {
-        m_Threads.push_back(std::thread(&Game::PerformanceStressTest, this, 25));
-    }*/
+        m_Threads.push_back(std::thread(&Game::PerformanceStressTest, this, 40));
+    }
     //
-    PerformanceStressTest(150);
-    GenerateWalls(150);
+    /*PerformanceStressTest(300);*/
+    GenerateWalls(160);
 
     // Init Renderer
     m_Renderer.Init(shader);
@@ -71,7 +71,7 @@ void Game::Update(float dt)
     }
 
     // Physics update
-    g_Physics.DoCollisions();
+    g_Physics.DoCollisions(dt);
 }
 
 
@@ -110,7 +110,7 @@ void Game::PerformanceStressTest(int32_t bulletsCount)
     {
         gdm::vec2 pos(10.0f + j * 40.0f, 10.0f);
         //gdm::vec2 pos(10.0f, 100.0f);
-        gdm::vec2 dir(1.0f, 0.99999f);
+        gdm::vec2 dir(0.0f, 1.0f);
         float speed = 200.0f;
         float timeToSpawn = 3.0f;
         float lifetime = 5.0f;
@@ -133,9 +133,9 @@ void Game::GenerateWalls(int32_t count)
 {
     for (size_t i = 0; i < count; i++)
     {
-        gdm::vec2 pos(10.0f + i * 50.0f, 600.0f);
+        gdm::vec2 pos(10.0f + i * 15.0f, 700.0f);
         //gdm::vec2 pos(10.0f, 600.0f);
-        gdm::vec2 size(500.0f, 20.0f);
+        gdm::vec2 size(10.0f, 10.0f);
         float rotation = 0.0f;
 
         WallObject* wall = new WallObject(pos, size, rotation);

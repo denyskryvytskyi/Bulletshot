@@ -11,12 +11,11 @@ public:
 
     void Draw(Renderer& renderer) override;
 
-    void OnCollisionEnter(GameObject* objA, GameObject* objB, const CollisionInfo& collisionInfo) override;
+    void OnCollisionEnter(CollisionInfo info) override;
     float GetRotation() const override { return m_RotationAngle; }
 
     CollisionShape GetShape() const override { return m_Shape; }
 
 private:
-    //AABBShape m_Shape;
     float m_RotationAngle; // in degrees
 };

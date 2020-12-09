@@ -15,7 +15,7 @@ void WallObject::Draw(Renderer& renderer)
     }
 }
 
-void WallObject::OnCollisionEnter(GameObject* objA, GameObject* objB, const CollisionInfo& collisionInfo)
+void WallObject::OnCollisionEnter(CollisionInfo info)
 {
-    m_Destroyed = true;
+    m_Destroyed = std::get<0>(info);
 }

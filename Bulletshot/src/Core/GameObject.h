@@ -3,7 +3,6 @@
 #include <gdm/gdm.h>
 #include "Renderer.h"
 #include "Core/ColliderComponent.h"
-#include "CommonTypes.h"
 
 class GameObject
 {
@@ -12,7 +11,7 @@ public:
     GameObject(gdm::vec2 pos, gdm::vec2 size, gdm::vec3 color, ShapeType shape);
 
     virtual void Draw(Renderer& renderer) = 0;
-    virtual void OnCollisionEnter(GameObject* objA, GameObject* objB, const CollisionInfo& collisionInfo) = 0;
+    virtual void OnCollisionEnter(CollisionInfo info) = 0;
 
     virtual CollisionShape GetShape() const = 0;
     virtual float GetRotation() const = 0;
