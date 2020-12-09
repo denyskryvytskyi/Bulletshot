@@ -31,8 +31,7 @@ void Renderer::DrawQuad(gdm::vec2 position, gdm::vec2 size, float rotateAngle, g
     m_Shader->SetVector3f("u_Color", color);
 
     glBindVertexArray(quadVAO);
-    glDrawArrays(GL_TRIANGLES, 0, 6);
-    glBindVertexArray(0);
+    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
 }
 
 void Renderer::DrawCircle(gdm::vec2 position, gdm::vec2 radius, gdm::vec3 color)
@@ -50,7 +49,6 @@ void Renderer::DrawCircle(gdm::vec2 position, gdm::vec2 radius, gdm::vec3 color)
 
     glBindVertexArray(circleVAO);
     glDrawArrays(GL_TRIANGLE_FAN, 0, 90);
-    glBindVertexArray(0);
 }
 
 void Renderer::initRenderData()
@@ -60,11 +58,8 @@ void Renderer::initRenderData()
     float quadVertices[] = {
        0.0f, 1.0f,
        1.0f, 0.0f,
-       0.0f, 0.0f, // pos of quad
-
-       0.0f, 1.0f,
-       1.0f, 1.0f,
-       1.0f, 0.0f
+       0.0f, 0.0f, // position of quad
+       1.0f, 1.0f
     };
 
     glGenVertexArrays(1, &quadVAO);
@@ -73,11 +68,21 @@ void Renderer::initRenderData()
     glBindBuffer(GL_ARRAY_BUFFER, quadVBO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), quadVertices, GL_STATIC_DRAW);
 
+    uint32_t quadIBO;
+    unsigned int quadIndecies[] = {
+        0, 1, 2,
+        0, 3, 1
+    };
+    glGenBuffers(1, &quadIBO);
+
     glBindVertexArray(quadVAO);
+
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, quadIBO);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(quadIndecies), quadIndecies, GL_STATIC_DRAW);
+
     glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*)0);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glBindVertexArray(0);
+    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), 0);
+
 
     // CIRCLE
     const int32_t segmentsCount = 180;
@@ -101,6 +106,4 @@ void Renderer::initRenderData()
     glBindVertexArray(circleVAO);
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*)0);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glBindVertexArray(0);
 }
