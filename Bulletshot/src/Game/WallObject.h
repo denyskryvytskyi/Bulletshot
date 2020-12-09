@@ -13,9 +13,11 @@ public:
 
     void OnCollisionEnter(CollisionInfo info) override;
     float GetRotation() const override { return m_RotationAngle; }
+    const gdm::vec2& GetShapeCenter() const override { return m_RectCenter; }
 
     CollisionShape GetShape() const override { return m_Shape; }
 
 private:
-    float m_RotationAngle; // in degrees
+    float m_RotationAngle; // in radians
+    gdm::vec2 m_RectCenter;
 };

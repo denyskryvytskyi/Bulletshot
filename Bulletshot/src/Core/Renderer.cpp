@@ -23,7 +23,7 @@ void Renderer::DrawQuad(gdm::vec2 position, gdm::vec2 size, float rotateAngle, g
         gdm::scale(gdm::mat4(), gdm::vec3(size.x, size.y, 1.0f))
         // Rotation around center
         * gdm::translate(gdm::mat4(), gdm::vec3(-0.5f * size.x, -0.5f * size.y, 0.0f))
-        * gdm::rotate(gdm::mat4(), gdm::radians(rotateAngle), gdm::vec3(0.0f, 0.0f, 1.0f))
+        * gdm::rotate(gdm::mat4(), rotateAngle, gdm::vec3(0.0f, 0.0f, 1.0f))
         * gdm::translate(gdm::mat4(), gdm::vec3(0.5f * size.x, 0.5f * size.y, 0.0f))
         // Translation
         * gdm::translate(gdm::mat4(), gdm::vec3(position.x, position.y, 0.0f));
@@ -41,7 +41,7 @@ void Renderer::DrawCircle(gdm::vec2 position, gdm::vec2 radius, gdm::vec3 color)
     // Model matrix : scale->rotation->translation
     gdm::mat4 model =
         // Scale
-        gdm::scale(gdm::mat4(), gdm::vec3(radius.x * 2.0f, radius.y * 2.0f, 1.0f))
+        gdm::scale(gdm::mat4(), gdm::vec3(radius.x, radius.y, 1.0f))
         // Translation
         * gdm::translate(gdm::mat4(), gdm::vec3(position.x, position.y, 0.0f));
 
@@ -49,7 +49,7 @@ void Renderer::DrawCircle(gdm::vec2 position, gdm::vec2 radius, gdm::vec3 color)
     m_Shader->SetVector3f("u_Color", color);
 
     glBindVertexArray(circleVAO);
-    glDrawArrays(GL_TRIANGLE_FAN, 0, 90);
+    glDrawArrays(GL_TRIANGLE_FAN, 0, 20);
 }
 
 void Renderer::initRenderData()
@@ -86,7 +86,7 @@ void Renderer::initRenderData()
 
 
     // CIRCLE
-    const int32_t segmentsCount = 180;
+    const int32_t segmentsCount = 40;
     float circleVertices[segmentsCount];
 
     for (int i = 0; i < segmentsCount; i += 2)

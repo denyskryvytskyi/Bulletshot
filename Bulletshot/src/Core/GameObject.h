@@ -15,6 +15,7 @@ public:
 
     virtual CollisionShape GetShape() const = 0;
     virtual float GetRotation() const = 0;
+    virtual const gdm::vec2& GetShapeCenter() const = 0;
 
     const gdm::vec2& GetPosition() const { return m_Position; }
     const gdm::vec2& GetSize() const { return m_Size; }

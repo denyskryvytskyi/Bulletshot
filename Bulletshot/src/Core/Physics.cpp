@@ -1,8 +1,6 @@
 #include "bspch.h"
 #include "Physics.h"
 
-#include <glm/glm.hpp>
-
 Physics g_Physics;
 
 void Physics::DoCollisions(float dt)
@@ -69,9 +67,8 @@ CollisionInfo Physics::CheckCollision(const GameObject* aabb, const GameObject* 
     gdm::vec2 rotatedCircleCenter = circleCenter;
 
     gdm::vec2 rectPos = aabb->GetPosition();
-    gdm::vec2 rectSize = aabb->GetSize();
-    gdm::vec2 rectCenter = rectPos + rectSize / 2; // unrotated
-    float angle = gdm::radians(aabb->GetRotation());
+    gdm::vec2 rectCenter = aabb->GetShapeCenter(); // unrotated
+    float angle = aabb->GetRotation();
 
     // Rotate circle center point
     if (angle != 0)
@@ -79,7 +76,7 @@ CollisionInfo Physics::CheckCollision(const GameObject* aabb, const GameObject* 
         rotatedCircleCenter = RotatePoint(angle, circleCenter, rectCenter);
     }
 
-    gdm::vec2 intersectPoint = gdm::clamp(rotatedCircleCenter, rectPos, rectPos + rectSize);
+    gdm::vec2 intersectPoint = gdm::clamp(rotatedCircleCenter, rectPos, rectPos + aabb->GetSize());
 
     // Rotate intersection point
     if (angle != 0)
@@ -109,9 +106,6 @@ gdm::vec2 Physics::GetReflectionVector(gdm::vec2 dir, gdm::vec2 differenceVector
 
 gdm::vec2 Physics::RotatePoint(float angle, gdm::vec2 point, gdm::vec2 origin)
 {
-    gdm::vec2 rotatedP(0.0f);
-    rotatedP.x = cos(angle) * (point.x - origin.x) - sin(angle) * (point.y - origin.y) + origin.x;
-    rotatedP.y = sin(angle) * (point.x - origin.x) + cos(angle) * (point.y - origin.y) + origin.y;
-
-    return rotatedP;
+    return gdm::vec2(cos(angle) * (point.x - origin.x) - sin(angle) * (point.y - origin.y) + origin.x,
+                     sin(angle) * (point.x - origin.x) + cos(angle) * (point.y - origin.y) + origin.y);
 }

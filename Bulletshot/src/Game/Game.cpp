@@ -28,13 +28,13 @@ void Game::Init(const uint16_t& screenWidth, const uint16_t& screenHeight)
 
     // Init bullets and walls
     // With threads 
-    /*for (size_t i = 0; i < maxThreadsCount; i++)
+    for (size_t i = 0; i < maxThreadsCount; i++)
     {
         m_Threads.push_back(std::thread(&Game::PerformanceStressTest, this, 40));
-    }*/
+    }
     // Without threads
-    PerformanceStressTest(160);
-    GenerateWalls(160);
+    //PerformanceStressTest(160);
+    GenerateWalls(150);
     //
 }
 
@@ -108,8 +108,8 @@ void Game::PerformanceStressTest(int32_t bulletsCount)
     {
         gdm::vec2 pos(10.0f + j * 40.0f, 10.0f);
         //gdm::vec2 pos(10.0f, 100.0f);
-        gdm::vec2 dir(0.0f, 1.0f);
-        float speed = 200.0f;
+        gdm::vec2 dir(0.0f, 0.5f);
+        float speed = 300.0f;
         float timeToSpawn = 3.0f;
         float lifetime = 5.0f;
 
@@ -121,9 +121,9 @@ void Game::GenerateWalls(int32_t count)
 {
     for (size_t i = 0; i < count; i++)
     {
-        gdm::vec2 pos(10.0f + i * 15.0f, 700.0f);
+        gdm::vec2 pos(10.0f + i * 60.0f, 500.0f);
         //gdm::vec2 pos(10.0f, 600.0f);
-        gdm::vec2 size(10.0f, 10.0f);
+        gdm::vec2 size(50.0f, 10.0f);
         float rotation = 0.0f;
 
         m_WallManager.CreateWall(pos, size, rotation);

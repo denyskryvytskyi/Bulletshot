@@ -36,4 +36,3 @@ private:
 
     std::vector<std::thread> m_Threads;
 };
-

@@ -3,7 +3,8 @@
 
 WallObject::WallObject(gdm::vec2 pos, gdm::vec2 size, float rotationAngle, gdm::vec3 color, ShapeType shape)
     : GameObject(pos, size, color, shape)
-    , m_RotationAngle(rotationAngle)
+    , m_RotationAngle(gdm::radians(rotationAngle))
+    , m_RectCenter(pos + size / 2.0f)
 {
 }
 

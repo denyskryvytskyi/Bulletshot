@@ -6,7 +6,7 @@
 class BulletObject : public GameObject
 {
 public:
-    BulletObject(gdm::vec2 pos, gdm::vec2 dir, float speed, float time, float lifetime, float radius = 5.0f, gdm::vec3 color = { 1.0f, 1.0f, 0.0f }, ShapeType shapeType = ShapeType::Circle);
+    BulletObject(gdm::vec2 pos, gdm::vec2 dir, float speed, float time, float lifetime, float radius = 10.0f, gdm::vec3 color = { 1.0f, 1.0f, 0.0f }, ShapeType shapeType = ShapeType::Circle);
 
     void Draw(Renderer& renderer) override;
     void Update(float dt);
@@ -15,6 +15,7 @@ public:
     float GetRotation() const override { return 0; }
 
     CollisionShape GetShape() const override { return m_Shape; }
+    const gdm::vec2& GetShapeCenter() const override { return m_Position; }
 
 private:
     gdm::vec2 m_Dir;
