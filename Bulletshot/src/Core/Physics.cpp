@@ -37,7 +37,7 @@ void Physics::DoCollisions(float dt)
 
 void Physics::RegisterObject(GameObject* gameobject)
 {
-    m_Colliders.push_back(gameobject);
+    m_Colliders.emplace_back(gameobject);
 }
 
 void Physics::UnregisterObject(GameObject* gameobject)

@@ -4,11 +4,16 @@
 
 BulletManager::~BulletManager()
 {
-    for (int32_t i = 0; i < m_BulletObjects.size(); i++)
+    for (int32_t i = 0; i < m_BulletObjects.size(); ++i)
     {
         delete m_BulletObjects[i];
     }
     m_BulletObjects.clear();
+    for (int32_t i = 0; i < m_SharedResource.size(); ++i)
+    {
+        delete m_SharedResource[i];
+    }
+    m_SharedResource.clear();
 }
 
 void BulletManager::Update(float dt)
@@ -16,11 +21,11 @@ void BulletManager::Update(float dt)
     if (m_Mutex.try_lock())
     {
         // update bullets with shared resource
-        for (auto sharedBullet : m_SharedResource)
+        if (!m_SharedResource.empty())
         {
-            m_BulletObjects.push_back(sharedBullet);
+            m_BulletObjects.insert(m_BulletObjects.end(), m_SharedResource.begin(), m_SharedResource.end());
+            m_SharedResource.clear();
         }
-        m_SharedResource.clear();
         m_Mutex.unlock();
     }
 
@@ -45,7 +50,7 @@ void BulletManager::Fire(gdm::vec2 pos, gdm::vec2 dir, float speed, float time, 
     BulletObject* bullet = new BulletObject(pos, dir, speed, time, lifetime);
 
     std::lock_guard<std::mutex> lock(m_Mutex);
-    m_SharedResource.push_back(bullet);
+    m_SharedResource.emplace_back(bullet);
 }
 
 const std::vector<BulletObject*>& BulletManager::GetBulletObjects() const

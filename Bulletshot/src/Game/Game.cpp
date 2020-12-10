@@ -7,8 +7,13 @@ Game::~Game()
 {
     for (size_t i = 0; i < m_Threads.size(); i++)
     {
-        m_Threads[i].join();
+        std::thread& thread = m_Threads[i];
+        if (thread.joinable())
+        {
+            thread.join();
+        }
     }
+    m_Threads.clear();
 }
 
 void Game::Init(const uint16_t& screenWidth, const uint16_t& screenHeight)
@@ -30,11 +35,11 @@ void Game::Init(const uint16_t& screenWidth, const uint16_t& screenHeight)
     // With threads 
     for (size_t i = 0; i < maxThreadsCount; i++)
     {
-        m_Threads.push_back(std::thread(&Game::PerformanceStressTest, this, 40));
+        m_Threads.emplace_back(std::thread(&Game::PerformanceStressTest, this, 250));
     }
     // Without threads
-    //PerformanceStressTest(160);
-    GenerateWalls(150);
+    //PerformanceStressTest(1000);
+    GenerateWalls(1000);
     //
 }
 
@@ -45,9 +50,10 @@ void Game::ProcessInput(float dt)
 void Game::Update(float dt)
 {
     // MT Stress Test
+    //if flag == true
     /*for (size_t i = 0; i < maxThreadsCount; i++)
     {
-        m_Threads.push_back(std::thread(&Game::MTStabilityStressTest, this, 6));
+        m_Threads.emplace_back(std::thread(&Game::MTStabilityStressTest, this, 6));
     }*/
 
     // Bullets update

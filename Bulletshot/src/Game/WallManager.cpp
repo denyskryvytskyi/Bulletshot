@@ -4,7 +4,7 @@
 
 WallManager::~WallManager()
 {
-    for (int32_t i = 0; i < m_WallObjects.size(); i++)
+    for (int32_t i = 0; i < m_WallObjects.size(); ++i)
     {
         delete m_WallObjects[i];
     }
