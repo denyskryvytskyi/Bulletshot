@@ -3,6 +3,11 @@
 
 Physics g_Physics;
 
+void Physics::Cleanup()
+{
+    m_Colliders.clear();
+}
+
 void Physics::DoCollisions(float dt)
 {
     for (int32_t i = 0; i < m_Colliders.size(); ++i)
@@ -73,7 +78,7 @@ CollisionInfo Physics::CheckCollision(const GameObject* aabb, const GameObject* 
     // Rotate circle center point
     if (angle != 0)
     {
-        rotatedCircleCenter = RotatePoint(angle, circleCenter, rectCenter);
+        rotatedCircleCenter = gdm::rotatePoint(angle, circleCenter, rectCenter);
     }
 
     gdm::vec2 intersectPoint = gdm::clamp(rotatedCircleCenter, rectPos, rectPos + aabb->GetSize());
@@ -82,7 +87,7 @@ CollisionInfo Physics::CheckCollision(const GameObject* aabb, const GameObject* 
     if (angle != 0)
     {
         angle = -angle;
-        intersectPoint = RotatePoint(angle, intersectPoint, rectCenter);
+        intersectPoint = gdm::rotatePoint(angle, intersectPoint, rectCenter);
     }
 
     gdm::vec2 difference = intersectPoint - circleCenter;
@@ -104,8 +109,8 @@ gdm::vec2 Physics::GetReflectionVector(gdm::vec2 dir, gdm::vec2 differenceVector
 }
 
 
-gdm::vec2 Physics::RotatePoint(float angle, gdm::vec2 point, gdm::vec2 origin)
-{
-    return gdm::vec2(cos(angle) * (point.x - origin.x) - sin(angle) * (point.y - origin.y) + origin.x,
-                     sin(angle) * (point.x - origin.x) + cos(angle) * (point.y - origin.y) + origin.y);
-}
+//gdm::vec2 Physics::RotatePoint(float angle, gdm::vec2 point, gdm::vec2 origin)
+//{
+//    return gdm::vec2(cos(angle) * (point.x - origin.x) - sin(angle) * (point.y - origin.y) + origin.x,
+//                     sin(angle) * (point.x - origin.x) + cos(angle) * (point.y - origin.y) + origin.y);
+//}

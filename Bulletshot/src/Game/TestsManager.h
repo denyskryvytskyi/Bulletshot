@@ -7,7 +7,7 @@ public:
 
     static void ToggleGenerateObjects(const int32_t wallsCount, const int32_t bulletsCount);
     static void ToggleGenerateObjects();
-    static void ToggleCleanupScene();
+    static void ToggleCleanupScene(bool toggle);
     static void ToggleMTStressTest();
 
 public:

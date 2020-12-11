@@ -19,9 +19,9 @@ void TestsManager::ToggleGenerateObjects()
     m_GenerateObjects = !m_GenerateObjects;
 }
 
-void TestsManager::ToggleCleanupScene()
+void TestsManager::ToggleCleanupScene(bool toggle)
 {
-    m_CleanupScene = true;
+    m_CleanupScene = toggle;
 }
 
 void TestsManager::ToggleMTStressTest()

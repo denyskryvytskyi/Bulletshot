@@ -22,11 +22,18 @@ public:
     static void OnGameobjectSpawned(GameObject* gameobject);
     static void OnGameobjectDestroyed(GameObject* gameobject);
 
-    // tests
+    // tests - temp
     void MTStabilityStressTest(int32_t bulletsCount);
     void PerformanceStressTest(int32_t bulletsCount);
 
 private:
+    // Pass by value because of scene manager can clean up info, but this functions still need to have info about objects
+    void GenerateBullets(const std::vector<BulletStartupInfo> bulletsInfo);
+    void GenerateWalls(const std::vector<WallStartupInfo>& wallsInfo);
+
+    void GenerateBulletsInThread(const std::vector<BulletStartupInfo> bulletsInfo);
+
+    // temp
     void GenerateWalls(int32_t count);
 
 private:

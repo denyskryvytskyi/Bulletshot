@@ -11,6 +11,8 @@ enum class CollisionType
 class Physics
 {
 public:
+
+    void Cleanup();
     void DoCollisions(float dt);
 
     void RegisterObject(GameObject* gameobject);
@@ -25,7 +27,7 @@ private:
     // AABB - Circle collision
     CollisionInfo CheckCollision(const GameObject* aabb, const GameObject* circle);
 
-    gdm::vec2 RotatePoint(float angle, gdm::vec2 point, gdm::vec2 origin);
+    //gdm::vec2 RotatePoint(float angle, gdm::vec2 point, gdm::vec2 origin);
 
 private:
     std::vector<GameObject*> m_Colliders;

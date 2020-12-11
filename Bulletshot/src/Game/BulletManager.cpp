@@ -9,16 +9,7 @@ BulletManager::BulletManager()
 
 BulletManager::~BulletManager()
 {
-    for (int32_t i = 0; i < m_BulletObjects.size(); ++i)
-    {
-        delete m_BulletObjects[i];
-    }
-    m_BulletObjects.clear();
-    for (int32_t i = 0; i < m_SharedResource.size(); ++i)
-    {
-        delete m_SharedResource[i];
-    }
-    m_SharedResource.clear();
+    Cleanup();
 }
 
 void BulletManager::Update(float dt)
@@ -62,10 +53,24 @@ void BulletManager::Fire(gdm::vec2 pos, gdm::vec2 dir, float speed, float time, 
 
     std::unique_lock<std::mutex> lock(m_Mutex);
 
-    // wait (give access to the main thread) if reached limit of faild attempts to update bullets container by shared resource container
+    // Wait (give access to the main thread) if reached limit of faild attempts to update bullets container by shared resource container
     m_ForceUpdateCV.wait(lock, [this] { return !(m_FailAttemptsUpdateWithSharedCount >= m_LimitFailsCount); });
 
     m_SharedResource.emplace_back(bullet);
+}
+
+void BulletManager::Cleanup()
+{
+    for (int32_t i = 0; i < m_BulletObjects.size(); ++i)
+    {
+        delete m_BulletObjects[i];
+    }
+    m_BulletObjects.clear();
+    for (int32_t i = 0; i < m_SharedResource.size(); ++i)
+    {
+        delete m_SharedResource[i];
+    }
+    m_SharedResource.clear();
 }
 
 const std::vector<BulletObject*>& BulletManager::GetBulletObjects() const

@@ -15,6 +15,8 @@ public:
     // Called from different threads
     void Fire(gdm::vec2 pos, gdm::vec2 dir, float speed, float time, float lifetime);
 
+    void Cleanup();
+
     const std::vector<BulletObject*>& GetBulletObjects() const;
 
 private:

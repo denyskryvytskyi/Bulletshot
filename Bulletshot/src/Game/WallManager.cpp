@@ -4,11 +4,7 @@
 
 WallManager::~WallManager()
 {
-    for (int32_t i = 0; i < m_WallObjects.size(); ++i)
-    {
-        delete m_WallObjects[i];
-    }
-    m_WallObjects.clear();
+    Cleanup();
 }
 
 void WallManager::Update()
@@ -26,6 +22,15 @@ void WallManager::Update()
             ++wallIterator;
         }
     }
+}
+
+void WallManager::Cleanup()
+{
+    for (int32_t i = 0; i < m_WallObjects.size(); ++i)
+    {
+        delete m_WallObjects[i];
+    }
+    m_WallObjects.clear();
 }
 
 void WallManager::CreateWall(gdm::vec2 pos, gdm::vec2 size, float rotationAngle)

@@ -73,9 +73,9 @@ void ImGuiLayer::Render()
     }
 
     ImGui::Columns(2);
-    ImGui::Text("Bullets count: ");
-    ImGui::Spacing();
     ImGui::Text("Walls count: ");
+    ImGui::Spacing();
+    ImGui::Text("Bullets count: ");
 
     ImGui::NextColumn();
     ImGui::PushItemWidth(200);
@@ -94,7 +94,7 @@ void ImGuiLayer::Render()
     ImGui::SameLine();
     if (ImGui::Button("Clean up scene"))
     {
-        TestsManager::ToggleCleanupScene();
+        TestsManager::ToggleCleanupScene(true);
     }
 
     ImGui::End();
