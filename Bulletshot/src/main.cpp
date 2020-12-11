@@ -3,15 +3,17 @@
 #include <GLFW/glfw3.h>
 #include <glad/glad.h>
 
+#include "Core/TimeStamp.h"
+#include "Core/ImGui/ImGuiLayer.h"
+
 #include "Game/Game.h"
-#include "Core/Timer.h"
 
 //
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode);
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 //
 
-int main()
+int WinMain()
 {
     // glfw init
     if (!glfwInit())
@@ -48,18 +50,22 @@ int main()
     glfwSetKeyCallback(window, key_callback);
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
+
+    // ImGui init
+    ImGuiLayer ImGuiLayer;
+    ImGuiLayer.Init(window, screenWidth, screenHeight);
+
     // Game init
     Game game;
     game.Init(screenWidth, screenHeight);
 
-    Timer timer;
+    TimeStamp timestamp;
     while (!glfwWindowShouldClose(window))
     {
-        float elapsed = timer.elapsed();
-        timer.restart();
+        float elapsed = timestamp.elapsed();
+        timestamp.restart();
 
-        //std::cout << "Elapsed time: " << elapsed << std::endl;
-        std::cout << "FPS: " << 1.0f / elapsed << std::endl;
+        ImGuiLayer.Update(elapsed);
 
         glfwPollEvents();
 
@@ -71,8 +77,12 @@ int main()
         glClear(GL_COLOR_BUFFER_BIT);
         game.Render();
 
+        ImGuiLayer.Render();
+
         glfwSwapBuffers(window);
     }
+
+    ImGuiLayer.Shutdown();
 
     return 0;
 }

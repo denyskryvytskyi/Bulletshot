@@ -3,6 +3,7 @@
 #include "Core/Renderer.h"
 #include "Core/Camera.h"
 #include "Core/ShaderLibrary.h"
+#include "SceneManager.h"
 #include "BulletManager.h"
 #include "WallManager.h"
 
@@ -16,6 +17,7 @@ public:
     void ProcessInput(float dt);
     void Update(float dt);
     void Render();
+    void Cleanup();
 
     static void OnGameobjectSpawned(GameObject* gameobject);
     static void OnGameobjectDestroyed(GameObject* gameobject);
@@ -33,6 +35,7 @@ private:
     ShaderLibrary m_ShaderLibrary;
     BulletManager m_BulletManager;
     WallManager m_WallManager;
+    SceneManager m_SceneManager;
 
     std::vector<std::thread> m_Threads;
 };

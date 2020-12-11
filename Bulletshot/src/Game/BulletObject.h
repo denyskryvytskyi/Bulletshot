@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Core/Timer.h"
+#include "Core/Timestamp.h"
 #include "Core/GameObject.h"
 
 class BulletObject : public GameObject
@@ -19,7 +19,7 @@ public:
 
 private:
     gdm::vec2 m_Dir;
-    Timer m_Timer;
+    TimeStamp m_Timer;
     float m_Speed;
     float m_TimeToSpawn;
     float m_Lifetime;

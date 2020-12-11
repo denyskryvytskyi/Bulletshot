@@ -14,13 +14,15 @@ IncludeDir = {}
 IncludeDir["GLFW"] = "%{wks.location}/Bulletshot/dependencies/GLFW/include"
 IncludeDir["glad"] = "%{wks.location}/Bulletshot/dependencies/glad/include"
 IncludeDir["gdm"] = "%{wks.location}/Bulletshot/dependencies/gdm"
+IncludeDir["ImGui"] = "%{wks.location}/Bulletshot/dependencies/imgui"
 
 include "Bulletshot/dependencies/GLFW"
 include "Bulletshot/dependencies/glad"
+include "Bulletshot/dependencies/imgui"
 
 project "Bulletshot"
     location "Bulletshot"
-    kind "ConsoleApp"
+    kind "WindowedApp"
     language "C++"
     cppdialect "C++17"
     staticruntime "off"
@@ -44,13 +46,15 @@ project "Bulletshot"
         "%{prj.name}/src",
         "%{IncludeDir.GLFW}",
         "%{IncludeDir.glad}",
-        "%{IncludeDir.gdm}"
+        "%{IncludeDir.gdm}",
+        "%{IncludeDir.ImGui}"
     }
 
     links
     {
         "GLFW",
         "glad",
+        "ImGui",
         "opengl32.lib"
     }
 

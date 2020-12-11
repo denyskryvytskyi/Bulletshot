@@ -1,5 +1,6 @@
 #include "bspch.h"
 #include "Game.h"
+#include "TestsManager.h"
 
 const unsigned int maxThreadsCount = 4;
 
@@ -33,28 +34,48 @@ void Game::Init(const uint16_t& screenWidth, const uint16_t& screenHeight)
 
     // Init bullets and walls
     // With threads 
-    for (size_t i = 0; i < maxThreadsCount; i++)
+   /* for (size_t i = 0; i < maxThreadsCount; i++)
     {
         m_Threads.emplace_back(std::thread(&Game::PerformanceStressTest, this, 250));
-    }
+    }*/
     // Without threads
     //PerformanceStressTest(1000);
-    GenerateWalls(1000);
+    //GenerateWalls(1000);
     //
 }
 
 void Game::ProcessInput(float dt)
 {
+    // —ƒ≈Ћј“№ —“–≈Ћ№Ѕ” ѕќ Ќј∆ј“»ё
 }
 
 void Game::Update(float dt)
 {
     // MT Stress Test
-    //if flag == true
-    /*for (size_t i = 0; i < maxThreadsCount; i++)
+    if (TestsManager::m_AllowMTStabilityStressTest)
     {
-        m_Threads.emplace_back(std::thread(&Game::MTStabilityStressTest, this, 6));
-    }*/
+        for (size_t i = 0; i < maxThreadsCount; i++)
+        {
+            m_Threads.emplace_back(std::thread(&Game::MTStabilityStressTest, this, 6));
+        }
+    }
+
+    if (TestsManager::m_GenerateObjects)
+    {
+        m_SceneManager.CreateScene(TestsManager::m_WallsCount, TestsManager::m_BulletsCount);
+        TestsManager::ToggleGenerateObjects();
+
+        // generate walls and bullets by created scene infos
+        //GenerateBullets(m_SceneManager.GetBulletsInfo());
+        GenerateWalls(10);
+    }
+
+    if (TestsManager::m_CleanupScene)
+    {
+        // WallManager.Cleanup() - тут все просто, очищаем вектор
+        // BulletManager.Cleanup() - тут нужно подумать, ведь еще может происходить стрельба - возможно стоит join все потоки
+    }
+
 
     // Bullets update
     m_BulletManager.Update(dt);
@@ -65,7 +86,6 @@ void Game::Update(float dt)
     // Physics update
     g_Physics.DoCollisions(dt);
 }
-
 
 void Game::Render()
 {
@@ -78,6 +98,10 @@ void Game::Render()
     {
         bullet->Draw(m_Renderer);
     }
+}
+
+void Game::Cleanup()
+{
 }
 
 void Game::OnGameobjectSpawned(GameObject* gameobject)
@@ -101,7 +125,7 @@ void Game::MTStabilityStressTest(int32_t bulletsCount)
         gdm::vec2 dir(1.0f, 0.0f);
         float speed = 100.0f;
         float timeToSpawn = 3.0f;
-        float lifetime = 5.0f;
+        float lifetime = 10.0f;
 
         m_BulletManager.Fire(pos, dir, speed, timeToSpawn, lifetime);
     }
@@ -117,7 +141,7 @@ void Game::PerformanceStressTest(int32_t bulletsCount)
         gdm::vec2 dir(0.0f, 0.5f);
         float speed = 300.0f;
         float timeToSpawn = 3.0f;
-        float lifetime = 5.0f;
+        float lifetime = 10.0f;
 
         m_BulletManager.Fire(pos, dir, speed, timeToSpawn, lifetime);
     }

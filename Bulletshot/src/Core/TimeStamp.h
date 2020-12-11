@@ -2,10 +2,10 @@
 
 #include <chrono>
 
-class Timer
+class TimeStamp
 {
 public:
-    Timer()
+    TimeStamp()
         : begin(clock::now())
     {}
 
