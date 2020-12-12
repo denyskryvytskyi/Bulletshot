@@ -33,7 +33,7 @@ public:
     ~SceneManager();
 
     void Init(float screenWidth, float screenHeight);
-    void CreateScene(int32_t wallsCount = 10, int32_t bulletsCount = 0);
+    void CreateScene(uint32_t wallsCount = 15, uint32_t bulletsCount = 15);
     void Cleanup();
 
     const std::vector<BulletStartupInfo>& GetBulletsInfo() const { return m_BulletsStartupInfo; }

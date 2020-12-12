@@ -17,6 +17,7 @@ ImGuiLayer::ImGuiLayer()
 
 ImGuiLayer::~ImGuiLayer()
 {
+    Shutdown();
 }
 
 void ImGuiLayer::Init(GLFWwindow* window, const uint16_t& screenWidth, const uint16_t& screenHeight)
@@ -58,6 +59,7 @@ void ImGuiLayer::Render()
 
     // ------- Custom panels -------
     ImGui::Begin("Statistics and Tests");
+    ImGui::SetWindowSize(ImVec2(425.0f, 250.0f));
     ImGui::Text("FPS: %i", (int) m_LastFrameFPS);
 
     if (ImGui::Checkbox("V-Sync", &m_VSync))
@@ -79,8 +81,8 @@ void ImGuiLayer::Render()
 
     ImGui::NextColumn();
     ImGui::PushItemWidth(200);
-    ImGui::SliderInt("##walls", &m_Walls, 1, 5000);
-    ImGui::SliderInt("##bullets", &m_Bullets, 1, 5000);
+    ImGui::SliderInt("##walls", &m_Walls, 1, 2500);
+    ImGui::SliderInt("##bullets", &m_Bullets, 1, 2500);
     ImGui::PopItemWidth();
     ImGui::Columns();
 
@@ -96,6 +98,26 @@ void ImGuiLayer::Render()
     {
         TestsManager::ToggleCleanupScene(true);
     }
+
+    ImGui::Separator();
+
+    ImGui::Unindent(100.0f);
+    ImGui::Text("OpenGL info");
+    ImGui::Columns(2);
+    ImGui::Text("Vendor: ");
+    ImGui::Text("Renderer: ");
+    ImGui::Text("Version: ");
+
+    ImGui::NextColumn();
+    ImGui::PushItemWidth(100);
+    ImGui::Text("%s", glGetString(GL_VENDOR));
+    ImGui::Text("%s", glGetString(GL_RENDERER));
+    ImGui::Text("%s", glGetString(GL_VERSION));
+    ImGui::PopItemWidth();
+    ImGui::Columns();
+
+
+    //std::cout << "OpenGL info:\n Vendor: " << glGetString(GL_VENDOR) << "\n Renderer: " << glGetString(GL_RENDERER) << "\n Version: " << glGetString(GL_VERSION) << std::endl;
 
     ImGui::End();
 

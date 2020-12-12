@@ -2,55 +2,49 @@
 #include "Game.h"
 #include "TestsManager.h"
 
-const uint32_t maxThreadsCount = 4;
+Game::Game()
+    : m_MaxThreadsCount(4)
+{
+}
 
 Game::~Game()
 {
     Cleanup();
 }
 
-void Game::Init(const uint16_t& screenWidth, const uint16_t& screenHeight)
+void Game::Init(uint16_t screenWidth, uint16_t screenHeight)
 {
-    // Init Camera
+    // Camera
     m_Camera.SetProjection(0.0f, (float)screenWidth, 0.0f, (float)screenHeight);
 
     // Shaders
     StrongShaderPtr shader = m_ShaderLibrary.Load("default_shader");
     shader->Bind();
     shader->SetMatrix4("u_Proj", m_Camera.GetProjectionMatrix());
-    //
 
-    // Init Renderer
+    // Renderer
     m_Renderer.Init(shader);
-    //
 
+    // Scene
     m_SceneManager.Init((float)screenWidth, (float)screenHeight);
 
-    // Init bullets and walls
-    // With threads 
-   /* for (size_t i = 0; i < maxThreadsCount; i++)
-    {
-        m_Threads.emplace_back(std::thread(&Game::PerformanceStressTest, this, 250));
-    }*/
-    // Without threads
-    PerformanceStressTest(1);
-    GenerateWalls(1);
-    //
-}
-
-void Game::ProcessInput(float dt)
-{
-    // ÑÄÅËÀÒÜ ÑÒÐÅËÜÁÓ ÏÎ ÍÀÆÀÒÈÞ
+    // Init predefined bullets and walls
+    m_SceneManager.CreateScene();
+    GenerateBullets(m_SceneManager.GetBulletsInfo());
+    GenerateWalls(m_SceneManager.GetWallsInfo());
 }
 
 void Game::Update(float dt)
 {
-    // MT Stress Test
     if (TestsManager::m_AllowMTStabilityStressTest)
     {
-        for (uint32_t i = 0; i < maxThreadsCount; i++)
+        for (uint32_t i = 0; i < m_MaxThreadsCount; i++)
         {
-            m_Threads.emplace_back(std::thread(&Game::MTStabilityStressTest, this, 6));
+            m_SceneManager.CreateScene(0, 30);
+
+            // generate walls and bullets by created scene info
+            GenerateBullets(m_SceneManager.GetBulletsInfo());
+            GenerateWalls(m_SceneManager.GetWallsInfo());
         }
     }
 
@@ -59,7 +53,7 @@ void Game::Update(float dt)
         m_SceneManager.CreateScene(TestsManager::m_WallsCount, TestsManager::m_BulletsCount);
         TestsManager::ToggleGenerateObjects();
 
-        // generate walls and bullets by created scene infos
+        // generate walls and bullets by created scene info
         GenerateBullets(m_SceneManager.GetBulletsInfo());
         GenerateWalls(m_SceneManager.GetWallsInfo());
     }
@@ -119,50 +113,20 @@ void Game::OnGameobjectDestroyed(GameObject* gameobject)
     g_Physics.UnregisterObject(gameobject);
 }
 
-// ----------------------------------------------------------
-
-// MT Stress Test
-void Game::MTStabilityStressTest(int32_t bulletsCount)
+void Game::GenerateBullets(const std::vector<BulletStartupInfo>& bulletsInfo)
 {
-    for (uint32_t j = 0; j < bulletsCount; j++)
-    {
-        gdm::vec2 pos(10.0f, 100.0f + j * 20.0f);
-        gdm::vec2 dir(1.0f, 0.0f);
-        float speed = 100.0f;
-        float timeToSpawn = 3.0f;
-        float lifetime = 10.0f;
+    uint32_t bulletsPerThreadCount = (uint32_t) (bulletsInfo.size() / m_MaxThreadsCount);
 
-        m_BulletManager.Fire(pos, dir, speed, timeToSpawn, lifetime);
-    }
-}
-
-// Perfomance Stress Test
-void Game::PerformanceStressTest(int32_t bulletsCount)
-{
-    for (uint32_t j = 0; j < bulletsCount; j++)
-    {
-        gdm::vec2 pos(10.0f + j * 40.0f, 10.0f);
-        //gdm::vec2 pos(10.0f, 100.0f);
-        gdm::vec2 dir(0.5f, 0.555f);
-        float speed = 300.0f;
-        float timeToSpawn = 3.0f;
-        float lifetime = 10.0f;
-
-        m_BulletManager.Fire(pos, dir, speed, timeToSpawn, lifetime);
-    }
-}
-
-// ----------------------------------------------------------
-
-void Game::GenerateBullets(const std::vector<BulletStartupInfo> bulletsInfo)
-{
-    uint32_t bulletsPerThreadCount = (uint32_t) bulletsInfo.size() / maxThreadsCount;
-
-    for (uint32_t i = 0; i < maxThreadsCount; ++i)
+    for (uint32_t i = 0; i < m_MaxThreadsCount; ++i)
     {
         uint32_t startIndex = i * bulletsPerThreadCount;
-        std::vector<BulletStartupInfo> threadBullets(bulletsInfo.begin() + startIndex, bulletsInfo.begin() + startIndex + bulletsPerThreadCount);
-        m_Threads.emplace_back(std::thread(&Game::GenerateBulletsInThread, this, threadBullets));
+        std::vector<BulletStartupInfo> threadBullets(bulletsInfo.begin() + startIndex,
+            i == m_MaxThreadsCount - 1 ? bulletsInfo.end() : bulletsInfo.begin() + startIndex + bulletsPerThreadCount);
+        if (!threadBullets.empty())
+        {
+            // Pass copy of threadBullets because original is destroyed at the iteration end
+            m_Threads.emplace_back(std::thread(&Game::GenerateBulletsInThread, this, threadBullets));
+        }
     }
 }
 
@@ -179,18 +143,5 @@ void Game::GenerateWalls(const std::vector<WallStartupInfo>& wallsInfo)
     for (const WallStartupInfo& info : wallsInfo)
     {
         m_WallManager.CreateWall(info.Position, info.Size, info.Rotation);
-    }
-}
-
-void Game::GenerateWalls(int32_t count)
-{
-    for (uint32_t i = 0; i < count; i++)
-    {
-        gdm::vec2 pos(100.0f + i * 60.0f, 500.0f);
-        //gdm::vec2 pos(10.0f, 600.0f);
-        gdm::vec2 size(500.0f, 10.0f);
-        float rotation = 91.0f; /// Ïîñìîòðåòü ïî÷åìó ñäâèãàåòñÿ ïðè òàêèõ íå÷åòíûõ ÷èñëàõ
-
-        m_WallManager.CreateWall(pos, size, rotation);
     }
 }
