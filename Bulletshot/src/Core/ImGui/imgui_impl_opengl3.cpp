@@ -71,10 +71,10 @@
 //  ES 3.0    300       "#version 300 es"   = WebGL 2.0
 //----------------------------------------
 
+#include "bspch.h"
 #if defined(_MSC_VER) && !defined(_CRT_SECURE_NO_WARNINGS)
 #define _CRT_SECURE_NO_WARNINGS
 #endif
-#include "bspch.h"
 #include "imgui.h"
 #include "imgui_impl_opengl3.h"
 #include <stdio.h>
