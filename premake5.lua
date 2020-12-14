@@ -1,12 +1,19 @@
 workspace "Bulletshot"
-    architecture "x64"
     startproject "Bulletshot"
 
     configurations
     {
-        "Debug",
-        "Release",
+        "Debug32",
+        "Release32",
+        "Debug64",
+        "Release64"
     }
+
+    filter "configurations:*32"
+       architecture "x86"
+ 
+    filter "configurations:*64"
+       architecture "x64"
 
     outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
@@ -66,12 +73,12 @@ project "Bulletshot"
     filter "system:windows"
         systemversion "latest"
 
-    filter "configurations:Debug"
+    filter "configurations:Debug*"
         defines "DEBUG"
         runtime "Debug"
         symbols "on"
 
-    filter "configurations:Release"
+    filter "configurations:Release*"
         defines "RELEASE"
         runtime "Release"
         optimize "on"
