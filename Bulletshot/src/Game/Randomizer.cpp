@@ -9,7 +9,7 @@ Randomizer::Randomizer()
 
 gdm::vec2 Randomizer::GeneratePosition(gdm::vec2 min, gdm::vec2 max)
 {
-    return gdm::vec2(rand() % (uint16_t)max.x + (uint16_t)min.x, rand() % (uint16_t)max.y + (uint16_t)min.y);
+    return gdm::vec2((float)(rand() % (uint16_t)max.x + (uint16_t)min.x), (float)(rand() % (uint16_t)max.y + (uint16_t)min.y));
 }
 
 gdm::vec2 Randomizer::GenerateDirection()
@@ -20,7 +20,7 @@ gdm::vec2 Randomizer::GenerateDirection()
 
 gdm::vec2 Randomizer::GenerateRectSize(gdm::vec2 min, gdm::vec2 max)
 {
-    return gdm::vec2(max.x + (uint16_t)min.x, rand() % (uint16_t)max.y + (uint16_t)min.y);
+    return gdm::vec2((float)(rand() % (uint16_t)max.x + (uint16_t)min.x), (float)(rand() % (uint16_t)max.y + (uint16_t)min.y));
 }
 
 float Randomizer::GenerateRotationAngle(float min, float max)

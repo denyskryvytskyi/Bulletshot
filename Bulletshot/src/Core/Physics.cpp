@@ -10,15 +10,15 @@ void Physics::Cleanup()
 
 void Physics::DoCollisions(float dt)
 {
-    for (int32_t i = 0; i < m_Colliders.size(); ++i)
+    for (uint32_t i = 0; i < m_Colliders.size(); ++i)
     {
-        for (int32_t j = i + 1; j < m_Colliders.size(); ++j)
+        for (uint32_t j = i + 1; j < m_Colliders.size(); ++j)
         {
             GameObject* objA = m_Colliders[i];
             GameObject* objB = m_Colliders[j];
 
-            CollisionShape shapeA = objA->GetShape();
-            CollisionShape shapeB = objB->GetShape();
+            const CollisionShape& shapeA = objA->GetShape();
+            const CollisionShape& shapeB = objB->GetShape();
 
             CollisionInfo collisionResult;
             switch (DetectCollisionType(shapeA, shapeB))
@@ -107,10 +107,3 @@ gdm::vec2 Physics::GetReflectionVector(gdm::vec2 dir, gdm::vec2 differenceVector
     // r = d - 2(d . n) * n , where d . n is dot product
     return (dir - normal * (gdm::dot(dir, normal) * 2));
 }
-
-
-//gdm::vec2 Physics::RotatePoint(float angle, gdm::vec2 point, gdm::vec2 origin)
-//{
-//    return gdm::vec2(cos(angle) * (point.x - origin.x) - sin(angle) * (point.y - origin.y) + origin.x,
-//                     sin(angle) * (point.x - origin.x) + cos(angle) * (point.y - origin.y) + origin.y);
-//}

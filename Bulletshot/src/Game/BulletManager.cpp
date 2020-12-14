@@ -61,12 +61,12 @@ void BulletManager::Fire(gdm::vec2 pos, gdm::vec2 dir, float speed, float time, 
 
 void BulletManager::Cleanup()
 {
-    for (int32_t i = 0; i < m_BulletObjects.size(); ++i)
+    for (uint32_t i = 0; i < m_BulletObjects.size(); ++i)
     {
         delete m_BulletObjects[i];
     }
     m_BulletObjects.clear();
-    for (int32_t i = 0; i < m_SharedResource.size(); ++i)
+    for (uint32_t i = 0; i < m_SharedResource.size(); ++i)
     {
         delete m_SharedResource[i];
     }

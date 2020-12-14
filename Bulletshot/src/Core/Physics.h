@@ -18,7 +18,7 @@ public:
     void RegisterObject(GameObject* gameobject);
     void UnregisterObject(GameObject* gameobject);
 
-    // defferenceVector - distance beetween circle center and intersection(reflection) point
+    // defferenceVector - distance between circle center and intersection(reflection) point
     static gdm::vec2 GetReflectionVector(gdm::vec2 dir, gdm::vec2 differenceVector);
 
 private:
@@ -26,8 +26,6 @@ private:
 
     // AABB - Circle collision
     CollisionInfo CheckCollision(const GameObject* aabb, const GameObject* circle);
-
-    //gdm::vec2 RotatePoint(float angle, gdm::vec2 point, gdm::vec2 origin);
 
 private:
     std::vector<GameObject*> m_Colliders;

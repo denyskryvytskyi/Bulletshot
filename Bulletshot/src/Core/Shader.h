@@ -25,7 +25,7 @@ public:
     void CompileProgram(const ShaderProgramSource& shaderSource);
 
 private:
-    uint32_t CompileShader(uint32_t type, const std::string& source);
+    int32_t CompileShader(uint32_t type, const std::string& source);
     int32_t GetUniformLocation(const std::string& name);
 
 private:

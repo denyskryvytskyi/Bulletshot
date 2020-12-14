@@ -23,14 +23,14 @@ void BulletObject::Update(float dt)
         return;
 
     // Calculate time from bullet generation
-    float elapsedTime = m_Timer.elapsed();
+    float elapsedTime = m_Timer.Elapsed();
 
     if (!m_Spawned)
     {
         if (elapsedTime >= m_TimeToSpawn)
         {
             m_Spawned = true;
-            m_Timer.restart();
+            m_Timer.Restart();
             Game::OnGameobjectSpawned(this);
         }
         else 
@@ -40,7 +40,7 @@ void BulletObject::Update(float dt)
     }
 
     // Calculate time from bullet spawning
-    elapsedTime = m_Timer.elapsed();
+    elapsedTime = m_Timer.Elapsed();
     if (elapsedTime >= m_Lifetime)
     {
         m_Destroyed = true;

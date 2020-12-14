@@ -4,8 +4,8 @@
 
 Renderer::~Renderer()
 {
-    glDeleteVertexArrays(1, &quadVAO);
-    glDeleteVertexArrays(1, &circleVAO);
+    glDeleteVertexArrays(1, &m_QuadVAO);
+    glDeleteVertexArrays(1, &m_CircleVAO);
 }
 
 void Renderer::Init(StrongShaderPtr& shader)
@@ -31,7 +31,7 @@ void Renderer::DrawQuad(gdm::vec2 position, gdm::vec2 size, float rotateAngle, g
     m_Shader->SetMatrix4("u_Model", model);
     m_Shader->SetVector3f("u_Color", color);
 
-    glBindVertexArray(quadVAO);
+    glBindVertexArray(m_QuadVAO);
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
 }
 
@@ -48,22 +48,22 @@ void Renderer::DrawCircle(gdm::vec2 position, gdm::vec2 radius, gdm::vec3 color)
     m_Shader->SetMatrix4("u_Model", model);
     m_Shader->SetVector3f("u_Color", color);
 
-    glBindVertexArray(circleVAO);
+    glBindVertexArray(m_CircleVAO);
     glDrawArrays(GL_TRIANGLE_FAN, 0, 20);
 }
 
 void Renderer::initRenderData()
 {
-    // QUAD
+    // ----------- QUAD -----------
     uint32_t quadVBO;
     float quadVertices[] = {
        0.0f, 1.0f,
        1.0f, 0.0f,
-       0.0f, 0.0f, // position of quad
+       0.0f, 0.0f, // left down - position of quad
        1.0f, 1.0f
     };
 
-    glGenVertexArrays(1, &quadVAO);
+    glGenVertexArrays(1, &m_QuadVAO);
     glGenBuffers(1, &quadVBO);
 
     glBindBuffer(GL_ARRAY_BUFFER, quadVBO);
@@ -76,7 +76,7 @@ void Renderer::initRenderData()
     };
     glGenBuffers(1, &quadIBO);
 
-    glBindVertexArray(quadVAO);
+    glBindVertexArray(m_QuadVAO);
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, quadIBO);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(quadIndecies), quadIndecies, GL_STATIC_DRAW);
@@ -84,27 +84,26 @@ void Renderer::initRenderData()
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), 0);
 
-
-    // CIRCLE
+    // ----------- CIRCLE -----------
     const int32_t segmentsCount = 40;
     float circleVertices[segmentsCount];
-
-    for (int i = 0; i < segmentsCount; i += 2)
+    float pi = (float)gdm::PI;
+    for (uint16_t i = 0; i < segmentsCount; i += 2)
     {
-        float theta = 2.0f * 3.1415926f * float(i) / float(segmentsCount); //get the current angle
+        float theta = 2.0f * pi * float(i) / float(segmentsCount); // get the current angle
 
-        circleVertices[i] = cosf(theta); //calculate the x component
-        circleVertices[i + 1] = sinf(theta); //calculate the y component
+        circleVertices[i] = cosf(theta); // calculate the x component
+        circleVertices[i + 1] = sinf(theta); // calculate the y component
     }
 
     uint32_t circleVBO;
-    glGenVertexArrays(1, &circleVAO);
+    glGenVertexArrays(1, &m_CircleVAO);
     glGenBuffers(1, &circleVBO);
 
     glBindBuffer(GL_ARRAY_BUFFER, circleVBO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(circleVertices), circleVertices, GL_STATIC_DRAW);
 
-    glBindVertexArray(circleVAO);
+    glBindVertexArray(m_CircleVAO);
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*)0);
 }

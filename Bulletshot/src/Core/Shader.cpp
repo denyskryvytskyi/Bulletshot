@@ -41,8 +41,8 @@ void Shader::SetMatrix4(const std::string& name, const gdm::mat4& matrix)
 void Shader::CompileProgram(const ShaderProgramSource& shaderSource)
 {
     m_RendererId = glCreateProgram();
-    uint32_t vs = CompileShader(GL_VERTEX_SHADER, shaderSource.VertexSource);
-    uint32_t fs = CompileShader(GL_FRAGMENT_SHADER, shaderSource.FragmentSource);
+    int32_t vs = CompileShader(GL_VERTEX_SHADER, shaderSource.VertexSource);
+    int32_t fs = CompileShader(GL_FRAGMENT_SHADER, shaderSource.FragmentSource);
 
     glAttachShader(m_RendererId, vs);
     glAttachShader(m_RendererId, fs);
@@ -52,17 +52,17 @@ void Shader::CompileProgram(const ShaderProgramSource& shaderSource)
     glGetProgramiv(m_RendererId, GL_LINK_STATUS, &isLinked);
     if (isLinked == GL_FALSE)
     {
+#ifdef DEBUG
         int32_t maxLength = 0;
         glGetProgramiv(m_RendererId, GL_INFO_LOG_LENGTH, &maxLength);
 
-        // todo: remove
         std::vector<char> infoLog(maxLength);
         glGetProgramInfoLog(m_RendererId, maxLength, &maxLength, &infoLog[0]);
 
         std::cout << "Failed program linking: " << infoLog.data() << std::endl;
-        //
-        glDeleteProgram(m_RendererId);
+#endif // DEBUG
 
+        glDeleteProgram(m_RendererId);
         ASSERT(false);
     }
 
@@ -70,7 +70,7 @@ void Shader::CompileProgram(const ShaderProgramSource& shaderSource)
     glDeleteShader(fs);
 }
 
-uint32_t Shader::CompileShader(uint32_t type, const std::string& source)
+int32_t Shader::CompileShader(uint32_t type, const std::string& source)
 {
     uint32_t shaderId = glCreateShader(type);
     const char* src = source.c_str();
@@ -82,20 +82,17 @@ uint32_t Shader::CompileShader(uint32_t type, const std::string& source)
 
     if (isCompiled == GL_FALSE)
     {
+#ifdef DEBUG
         int32_t maxLength = 0;
         glGetShaderiv(shaderId, GL_INFO_LOG_LENGTH, &maxLength);
 
-        /*
-        * Либо добавить вывод в лог, либо удалить вообще
-        */
         std::vector<char> infoLog(maxLength);
         glGetShaderInfoLog(shaderId, maxLength, &maxLength, &infoLog[0]);
 
         std::cout << "Failed shader compile: " << (type == GL_VERTEX_SHADER ? "vertex" : "fragment", " shader:") << infoLog.data() << std::endl;
-        //
+#endif // DEBUG
 
         glDeleteShader(shaderId);
-
         ASSERT(false);
 
         return -1;

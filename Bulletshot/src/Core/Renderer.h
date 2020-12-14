@@ -19,7 +19,7 @@ private:
 
 private:
     StrongShaderPtr m_Shader;
-    uint32_t quadVAO;
-    uint32_t circleVAO;
+    uint32_t m_QuadVAO;
+    uint32_t m_CircleVAO;
 };
 

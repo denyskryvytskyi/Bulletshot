@@ -26,7 +26,7 @@ void WallManager::Update()
 
 void WallManager::Cleanup()
 {
-    for (int32_t i = 0; i < m_WallObjects.size(); ++i)
+    for (uint32_t i = 0; i < m_WallObjects.size(); ++i)
     {
         delete m_WallObjects[i];
     }

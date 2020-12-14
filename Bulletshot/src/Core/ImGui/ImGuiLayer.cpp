@@ -1,14 +1,10 @@
 #include "bspch.h"
 #include "ImGuiLayer.h"
-
 #include "imgui.h"
 #include "imgui_impl_glfw.h"
-#include "imgui_impl_opengl3.h""
-
+#include "imgui_impl_opengl3.h"
 #include <glad/glad.h>
-
 #include "Game/TestsManager.h"
-
 
 ImGuiLayer::ImGuiLayer()
     : m_WindowSize(0.0f), m_LastFrameFPS(0.0f), m_VSync(false), m_MTStressTest(false), m_Bullets(0), m_Walls(0)
@@ -24,11 +20,11 @@ void ImGuiLayer::Init(GLFWwindow* window, const uint16_t& screenWidth, const uin
 {
     m_WindowSize = gdm::vec2((float)screenWidth, (float)screenHeight);
 
-    // setup Dear ImGui Context
+    // Setup ñontext
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
 
-    // Setup dear ImGui style
+    // Setup style
     ImGui::StyleColorsDark();
 
     // Setup Platform/Renderer bindings
@@ -45,9 +41,7 @@ void ImGuiLayer::Shutdown()
 
 void ImGuiLayer::Update(float dt)
 {
-    //std::cout << "Elapsed time: " << elapsed << std::endl;
     m_LastFrameFPS = 1.0f / dt;
-    std::cout << "FPS: " << m_LastFrameFPS << std::endl;
 }
 
 void ImGuiLayer::Render()
@@ -115,9 +109,6 @@ void ImGuiLayer::Render()
     ImGui::Text("%s", glGetString(GL_VERSION));
     ImGui::PopItemWidth();
     ImGui::Columns();
-
-
-    //std::cout << "OpenGL info:\n Vendor: " << glGetString(GL_VENDOR) << "\n Renderer: " << glGetString(GL_RENDERER) << "\n Version: " << glGetString(GL_VERSION) << std::endl;
 
     ImGui::End();
 

@@ -14,7 +14,7 @@ public:
     float GetRotation() const override { return m_RotationAngle; }
     const gdm::vec2& GetShapeCenter() const override { return m_RectCenter; }
 
-    CollisionShape GetShape() const override { return m_Shape; }
+    const CollisionShape& GetShape() const override { return m_Shape; }
 
 private:
     float m_RotationAngle; // in radians

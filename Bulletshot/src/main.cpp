@@ -1,25 +1,21 @@
 #include "bspch.h"
-
 #include <GLFW/glfw3.h>
 #include <glad/glad.h>
 #include "Core/TimeStamp.h"
 #include "Core/ImGui/ImGuiLayer.h"
 #include "Game/Game.h"
 
-//
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode);
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
-//
 
-int WinMain()
+int WinMain(struct HINSTANCE__* hInstance, struct HINSTANCE__* hPrevInstance, char* lpszCmdLine, int nCmdShow)
 {
-    // glfw init
     if (!glfwInit())
     {
         ASSERT(false);
     }
 
-    // create window
+    // Create window
     const uint16_t screenWidth = 1280;
     const uint16_t screenHeight = 720;
 
@@ -32,14 +28,14 @@ int WinMain()
     }
     glfwMakeContextCurrent(window);
 
-    // load opengl functions
+    // Load OpenGL functions
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
     {
         ASSERT(false);
         return -1;
     }
 
-    // set callbacks
+    // Set callbacks
     glfwSetKeyCallback(window, key_callback);
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
@@ -54,8 +50,8 @@ int WinMain()
     TimeStamp timestamp;
     while (!glfwWindowShouldClose(window))
     {
-        float elapsed = timestamp.elapsed();
-        timestamp.restart();
+        float elapsed = timestamp.Elapsed();
+        timestamp.Restart();
 
         glfwPollEvents();
 

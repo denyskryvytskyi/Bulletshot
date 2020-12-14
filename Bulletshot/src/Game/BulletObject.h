@@ -14,7 +14,7 @@ public:
     void OnCollisionEnter(CollisionInfo info) override;
     float GetRotation() const override { return 0; }
 
-    CollisionShape GetShape() const override { return m_Shape; }
+    const CollisionShape& GetShape() const override { return m_Shape; }
     const gdm::vec2& GetShapeCenter() const override { return m_Position; }
 
 private:
