@@ -63,7 +63,7 @@ void ImGuiLayer::Render()
 
     ImGui::Separator();
 
-    if (ImGui::Checkbox("MT Stability Test", &m_MTStressTest))
+    if (ImGui::Checkbox("MT Stability Stress Test", &m_MTStressTest))
     {
         TestsManager::ToggleMTStressTest();
     }

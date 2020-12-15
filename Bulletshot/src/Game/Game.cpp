@@ -42,7 +42,7 @@ void Game::Update(float dt)
         {
             m_SceneManager.CreateScene(0, 30);
 
-            // generate walls and bullets by created scene info
+            // Generate walls and bullets by created scene info
             GenerateBullets(m_SceneManager.GetBulletsInfo());
             GenerateWalls(m_SceneManager.GetWallsInfo());
         }
@@ -53,7 +53,7 @@ void Game::Update(float dt)
         m_SceneManager.CreateScene(TestsManager::m_WallsCount, TestsManager::m_BulletsCount);
         TestsManager::ToggleGenerateObjects();
 
-        // generate walls and bullets by created scene info
+        // Generate walls and bullets by created scene info
         GenerateBullets(m_SceneManager.GetBulletsInfo());
         GenerateWalls(m_SceneManager.GetWallsInfo());
     }
@@ -124,7 +124,10 @@ void Game::GenerateBullets(const std::vector<BulletStartupInfo>& bulletsInfo)
             i == m_MaxThreadsCount - 1 ? bulletsInfo.end() : bulletsInfo.begin() + startIndex + bulletsPerThreadCount);
         if (!threadBullets.empty())
         {
-            // Pass copy of threadBullets because original is destroyed at the iteration end
+            /* 
+            * Pass copy of threadBullets because original is destroyed at the iteration end
+            * and scene manager can cleaned up info while other threads firies bullets
+            */
             m_Threads.emplace_back(std::thread(&Game::GenerateBulletsInThread, this, threadBullets));
         }
     }
