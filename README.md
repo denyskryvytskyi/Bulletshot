@@ -19,3 +19,6 @@ Run vs2019-Win-GenProject.bat file from the scripts folder to build the solution
 | [Glad](https://glad.dav1d.de/) | OpenGL loader |
 | [Deat ImGui](https://github.com/kryvytskyidenys/imgui) | library using for GUI |
 | [GDM](https://github.com/kryvytskyidenys/gdm) | my custom 3D mathematics library |
+
+## Demo
+![Game screenshot](doc/Demo.gif)
