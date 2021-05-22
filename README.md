@@ -21,4 +21,4 @@ Run vs2019-Win-GenProject.bat file from the scripts folder to build the solution
 | [GDM](https://github.com/kryvytskyidenys/gdm) | my custom 3D mathematics library |
 
 ## Demo
-![Game screenshot](doc/Demo.gif)
+![Demo](doc/Demo.gif)
